@@ -1,7 +1,7 @@
-package com.global.aspect;
+package com.coffeeproject.global.aspect;
 
 
-import com.global.rsData.RsData;
+import com.coffeeproject.global.rsData.RsData;
 import jakarta.servlet.http.HttpServletResponse;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -19,7 +19,7 @@ public class ResponseAspect {
     }
 
     @Around("""
-                execution(public com.global.rsData.RsData *(..)) &&
+                execution(public com.coffeeproject.global.rsData.RsData *(..)) &&
                 (
                     within(@org.springframework.stereotype.Controller *) ||
                     within(@org.springframework.web.bind.annotation.RestController *)

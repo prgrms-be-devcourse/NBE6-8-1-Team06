@@ -1,4 +1,4 @@
-package com.global.jpa.entity;
+package com.coffeeproject.global.jpa.entity;
 
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.GeneratedValue;

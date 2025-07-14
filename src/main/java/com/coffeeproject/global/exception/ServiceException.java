@@ -1,7 +1,7 @@
-package com.global.exception;
+package com.coffeeproject.global.exception;
 
 
-import com.global.rsData.RsData;
+import com.coffeeproject.global.rsData.RsData;
 
 public class ServiceException extends RuntimeException {
     private final String resultCode;

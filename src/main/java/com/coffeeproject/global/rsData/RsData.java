@@ -1,4 +1,4 @@
-package com.global.rsData;
+package com.coffeeproject.global.rsData;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
