@@ -25,7 +25,7 @@ graph TD
 
 ## 프론트
 
-기술 : Next.js, React.js, Redux, TypeScript, Tailwind CSS
+기술 : Next.js, React.js, TypeScript, Tailwind CSS
 
 ## 백엔드
 
