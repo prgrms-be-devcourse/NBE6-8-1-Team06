@@ -23,4 +23,16 @@ public class OrderItem extends BaseEntity {
     @Column(nullable = false)
     private Integer quantity;
 
+    public void setOrder(Order order) {
+        this.order = order;
+    }
+
+    private OrderItem(Order order, Integer quantity) {
+        this.order = order;
+        this.quantity = quantity;
+    }
+
+    public static OrderItem createOrderItem(Order order, Integer quantity) {
+        return new OrderItem(order, quantity);
+    }
 }
