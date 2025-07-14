@@ -1,4 +1,4 @@
-package com.coffeeproject.domain.order;
+package com.coffeeproject.domain.order.order.enums;
 
 import lombok.Getter;
 
