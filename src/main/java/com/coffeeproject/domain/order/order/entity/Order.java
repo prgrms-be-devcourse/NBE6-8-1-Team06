@@ -39,10 +39,8 @@ public class Order extends BaseEntity {
         this.status = OrderStatus.PENDING;
     }
 
-    public static Order createOrder(String email, String address, String postalCode, List<OrderItem> orderItems) {
-        Order order = new Order(email, address, postalCode);
-        orderItems.forEach(order::addOrderItem);
-        return order;
+    public static Order createOrder(String email, String address, String postalCode) {
+        return new Order(email, address, postalCode);
     }
 
     public void addOrderItem(OrderItem orderItem) {
