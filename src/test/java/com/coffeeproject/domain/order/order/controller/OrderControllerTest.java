@@ -1,20 +1,16 @@
 package com.coffeeproject.domain.order.order.controller;
 
 import com.coffeeproject.domain.order.order.dto.OrderRequest;
-import com.coffeeproject.domain.order.order.entity.Order;
 import com.coffeeproject.domain.order.order.service.OrderService;
 import com.coffeeproject.domain.order.orderitem.dto.OrderItemRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.hamcrest.Matchers;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.MediaType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -23,7 +19,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@ActiveProfiles("test")
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
@@ -62,5 +57,20 @@ class OrderControllerTest {
                 .andExpect(jsonPath("$.data.items[0].quantity").value(2))
                 .andExpect(jsonPath("$.data.items[1].quantity").value(1));
 
+    }
+
+    @Test
+    @DisplayName("주문 생성 시 잘못된 요청이 들어오면 예외가 발생한다.")
+    void createOrderWithInvalidRequest() throws Exception {
+        OrderRequest request = new OrderRequest("notEmail", "경기도 남양주시", "111-111", List.of(
+                new OrderItemRequest(1, 2),
+                new OrderItemRequest(1, 1)
+        ));
+
+        mockMvc.perform(post("/orders")
+                        .contentType(String.valueOf(MediaType.APPLICATION_JSON))
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest())
+                .andDo(print());
     }
 }
