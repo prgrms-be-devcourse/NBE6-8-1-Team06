@@ -29,6 +29,7 @@ public class OrderService {
         request.items().forEach(itemRequest -> {
             OrderItem orderItem = OrderItem.createOrderItem(order, itemRequest.quantity());
             order.addOrderItem(orderItem);
+            // TODO : TOTAL_AMOUNT 계산
         });
 
         return orderRepository.save(order);

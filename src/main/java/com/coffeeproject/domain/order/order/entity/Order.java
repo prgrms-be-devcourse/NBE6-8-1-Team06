@@ -51,4 +51,10 @@ public class Order extends BaseEntity {
         orderItem.setOrder(this);
     }
 
+//    TODO : 연관관계 설정 후 계산
+//    public void calculateTotalAmount() {
+//        this.totalAmount = orderItems.stream()
+//                .mapToInt(orderItem -> orderItem.getProduct().getPrice() * orderItem.getQuantity())
+//                .sum();
+//    }
 }

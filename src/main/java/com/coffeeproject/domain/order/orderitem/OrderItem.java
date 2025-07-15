@@ -36,6 +36,9 @@ public class OrderItem extends BaseEntity {
     private OrderItem(Order order, Integer quantity) {
         this.order = order;
         this.quantity = quantity;
+        // TODO 연관관계 설정 후 가격 계산
+        // this.pricePerItem = product.getPrice();
+        this.subtotalAmount = this.pricePerItem * quantity;
     }
 
     public static OrderItem createOrderItem(Order order, Integer quantity) {
