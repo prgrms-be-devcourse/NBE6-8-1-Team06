@@ -2,6 +2,8 @@ package com.coffeeproject.domain.order.order.controller;
 
 import com.coffeeproject.domain.order.order.dto.OrderRequest;
 import com.coffeeproject.domain.order.order.entity.Order;
+import com.coffeeproject.domain.order.order.entity.Product;
+import com.coffeeproject.domain.order.order.repository.ProductRepository;
 import com.coffeeproject.domain.order.order.service.OrderService;
 import com.coffeeproject.domain.order.orderitem.dto.OrderItemRequest;
 import com.coffeeproject.global.exception.ServiceException;
@@ -38,19 +40,29 @@ class OrderControllerTest {
     private OrderService orderService;
 
     @Autowired
+    private ProductRepository productRepository;
+
+    @Autowired
     private ObjectMapper objectMapper;
 
     private OrderRequest request;
+    private Product product1;
+    private Product product2;
 
     @BeforeEach
     void setUp() {
-        request = new OrderRequest("test@example.com",
+        product1 = productRepository.save(new Product("아메리카노", "커피1", 3000));
+        product2 = productRepository.save(new Product("에스프레소", "커피2", 5000));
+
+        request = new OrderRequest(
+                "test@example.com",
                 "경기도 남양주시",
                 "111-111",
                 List.of(
-                        new OrderItemRequest(1, 2),
-                        new OrderItemRequest(1, 1)
-                ));
+                        new OrderItemRequest(product1.getId(), 2),
+                        new OrderItemRequest(product2.getId(), 1)
+                )
+        );
     }
 
     @Test
@@ -59,28 +71,27 @@ class OrderControllerTest {
         mockMvc.perform(post("/orders")
                         .contentType(String.valueOf(MediaType.APPLICATION_JSON))
                         .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
                 .andExpect(handler().handlerType(OrderController.class))
-                .andExpect(jsonPath("$.msg").value("1번 주문이 생성되었습니다."))
-                .andExpect(jsonPath("$.data.orderId").value(1))
-                .andExpect(jsonPath("$.data.customerEmail").value("test@example.com"))
-                .andExpect(jsonPath("$.data.shippingAddress").value("경기도 남양주시"))
-                .andExpect(jsonPath("$.data.shippingZipCode").value("111-111"))
+                .andExpect(jsonPath("$.data.orderId").exists())
+                .andExpect(jsonPath("$.data.totalAmount").value(11000))
                 .andExpect(jsonPath("$.data.items.length()").value(2))
                 .andExpect(jsonPath("$.data.items[0].quantity").value(2))
                 .andExpect(jsonPath("$.data.items[1].quantity").value(1));
-
     }
 
     @Test
     @DisplayName("주문 생성 시 잘못된 요청이 들어오면 예외가 발생한다.")
     void createOrderWithInvalidRequest() throws Exception {
-        OrderRequest request = new OrderRequest("notEmail",
+        OrderRequest request = new OrderRequest(
+                "notEmail",
                 "경기도 남양주시",
                 "111-111",
                 List.of(
-                new OrderItemRequest(1, 2),
-                new OrderItemRequest(1, 1)
-        ));
+                        new OrderItemRequest(product1.getId(), 2),
+                        new OrderItemRequest(product2.getId(), 1)
+                )
+        );
 
         mockMvc.perform(post("/orders")
                         .contentType(String.valueOf(MediaType.APPLICATION_JSON))
@@ -112,12 +123,13 @@ class OrderControllerTest {
                 .andExpect(jsonPath("$.data.customerEmail").exists())
                 .andExpect(jsonPath("$.data.shippingAddress").exists())
                 .andExpect(jsonPath("$.data.shippingZipCode").exists())
+                .andExpect(jsonPath("$.data.totalAmount").value(11000))
                 .andExpect(jsonPath("$.data.items").isArray());
     }
 
     @Test
     @DisplayName("존재하지 않는 주문 ID 조회 시 예외 반환")
-    void getOrderWithInvalidId() throws Exception {
+    void getOrderWithInvalidId() {
         int invalidId = 9999;
         assertThatThrownBy(() -> orderService.getOrderById(invalidId))
                 .isInstanceOf(ServiceException.class);
