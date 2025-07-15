@@ -15,9 +15,9 @@ public record OrderResponse(
     public OrderResponse(Order order) {
         this(
                 order.getId(),
-                order.getEmail(),
-                order.getAddress(),
-                order.getPostalCode(),
+                order.getCustomerEmail(),
+                order.getShippingAddress(),
+                order.getShippingZipCode(),
                 order.getOrderItems()
                         .stream()
                         .map(OrderItemResponse::new)

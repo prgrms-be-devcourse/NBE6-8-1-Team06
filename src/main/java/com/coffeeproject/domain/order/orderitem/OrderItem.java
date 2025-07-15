@@ -21,7 +21,13 @@ public class OrderItem extends BaseEntity {
     // TODO : 상품 엔티티 @ManyToOne 연관관계 설정 필요
 
     @Column(nullable = false)
-    private Integer quantity;
+    private int quantity;
+
+    @Column(nullable = false)
+    private int pricePerItem;
+
+    @Column(nullable = false)
+    private int subtotalAmount;
 
     public void setOrder(Order order) {
         this.order = order;
