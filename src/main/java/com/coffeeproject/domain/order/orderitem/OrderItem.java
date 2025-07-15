@@ -1,6 +1,7 @@
 package com.coffeeproject.domain.order.orderitem;
 
 import com.coffeeproject.domain.order.order.entity.Order;
+import com.coffeeproject.domain.order.order.entity.Product;
 import com.coffeeproject.global.jpa.entity.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -18,7 +19,8 @@ public class OrderItem extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private Order order;
 
-    // TODO : 상품 엔티티 @ManyToOne 연관관계 설정 필요
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Product product;
 
     @Column(nullable = false)
     private int quantity;
@@ -33,15 +35,15 @@ public class OrderItem extends BaseEntity {
         this.order = order;
     }
 
-    private OrderItem(Order order, Integer quantity) {
+    private OrderItem(Product product, Order order, Integer quantity) {
+        this.product = product;
         this.order = order;
         this.quantity = quantity;
-        // TODO 연관관계 설정 후 가격 계산
-        // this.pricePerItem = product.getPrice();
+        this.pricePerItem = product.getPrice();
         this.subtotalAmount = this.pricePerItem * quantity;
     }
 
-    public static OrderItem createOrderItem(Order order, Integer quantity) {
-        return new OrderItem(order, quantity);
+    public static OrderItem createOrderItem(Product product, Order order, Integer quantity) {
+        return new OrderItem(product, order, quantity);
     }
 }
