@@ -7,10 +7,9 @@ import com.coffeeproject.domain.order.order.service.OrderService;
 import com.coffeeproject.global.rsData.RsData;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -27,4 +26,23 @@ public class OrderController {
                  new OrderResponse(order)
          );
      }
+
+    @GetMapping
+    public RsData<List<OrderResponse>> getOrders() {
+        List<Order> orders = orderService.getAllOrders();
+        List<OrderResponse> orderResponses = orders.stream().map(OrderResponse::new).toList();
+        return new RsData<>("200",
+                "주문 목록이 조회되었습니다.",
+                orderResponses
+        );
+    }
+
+    @GetMapping("/{id}")
+    public RsData<OrderResponse> getOrder(@PathVariable int id) {
+        Order order = orderService.getOrderById(id);
+        return new RsData<>("200",
+                "%d번 주문이 조회되었습니다.".formatted(id),
+                new OrderResponse(order)
+        );
+    }
 }
