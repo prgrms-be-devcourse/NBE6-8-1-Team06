@@ -4,6 +4,7 @@ import com.coffeeproject.domain.order.order.dto.OrderRequest;
 import com.coffeeproject.domain.order.order.entity.Order;
 import com.coffeeproject.domain.order.order.service.OrderService;
 import com.coffeeproject.domain.order.orderitem.dto.OrderItemRequest;
+import com.coffeeproject.global.exception.ServiceException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -18,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -111,5 +113,13 @@ class OrderControllerTest {
                 .andExpect(jsonPath("$.data.shippingAddress").exists())
                 .andExpect(jsonPath("$.data.shippingZipCode").exists())
                 .andExpect(jsonPath("$.data.items").isArray());
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 주문 ID 조회 시 예외 반환")
+    void getOrderWithInvalidId() throws Exception {
+        int invalidId = 9999;
+        assertThatThrownBy(() -> orderService.getOrderById(invalidId))
+                .isInstanceOf(ServiceException.class);
     }
 }
