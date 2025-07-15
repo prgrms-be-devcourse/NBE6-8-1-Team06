@@ -7,11 +7,10 @@ public record OrderItemResponse(
         String productName,
         int quantity
 ) {
-    // TODO : 연관관계 설정 후 productId, productName 추가
     public OrderItemResponse(OrderItem orderItem) {
         this(
-                1,
-                "Sample Product",
+                orderItem.getProduct().getId(),
+                orderItem.getProduct().getName(),
                 orderItem.getQuantity()
         );
     }
