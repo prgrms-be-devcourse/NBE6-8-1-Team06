@@ -140,20 +140,20 @@ graph TD
 | **updated_at**  | LocalDateTime | 주문 정보 마지막 수정일         |
 
 
-## 4. 배송 정보 (DeliveryInfo)
+## 4. 배송 (Delivery)
 
 일괄 처리될 때 한 번에 배송처리되는 배송 정보를 담을 엔티티
 
-배송정보 id, 주문자 email, 배송지, 총계, 배송상태 등을 포함
+배송 id, 주문자 email, 배송지, 총계, 배송상태 등을 포함
 
 배송정보와 주문항목은 1대다 관계
 
-| 속성명                   | 데이터 타입 (Java) | 설명                                |
+| 속성명                   | 데이터 타입 (Java) | 설명                           |
 |-----------------------|---------------|-----------------------------------|
-| delivery_info_id      | Int          | 배송 묶음 고유 식별자                      |
-| customer_email        | String        | 이 배송 묶음의 주문자 이메일                  |
-| shipping_address      | String        | 이 배송 묶음의 공통 배송 주소                 |
-| total_delivery_amount | Int    | 이 배송 묶음 내 모든 주문의 총합 금액            |
+| delivery_id           | Int           | 배송 묶음 고유 식별자                  |
+| customer_email        | String        | 이 배송 묶음의 주문자 이메일            |
+| shipping_address      | String        | 이 배송 묶음의 공통 배송 주소           |
+| total_delivery_amount | Int           | 이 배송 묶음 내 모든 주문의 총합 금액     |
 | status                | String        | 배송 묶음의 상태 (예: "배송 준비 중", "배송 완료") |
 | **created_at**        | LocalDateTime |                                   |
 | **updated_at**        | LocalDateTime |                                   |
