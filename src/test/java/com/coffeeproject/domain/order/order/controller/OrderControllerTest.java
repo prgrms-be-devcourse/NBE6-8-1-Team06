@@ -1,9 +1,11 @@
 package com.coffeeproject.domain.order.order.controller;
 
 import com.coffeeproject.domain.order.order.dto.OrderRequest;
+import com.coffeeproject.domain.order.order.entity.Order;
 import com.coffeeproject.domain.order.order.service.OrderService;
 import com.coffeeproject.domain.order.orderitem.dto.OrderItemRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.MediaType;
@@ -16,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -35,17 +38,22 @@ class OrderControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    @Test
-    @DisplayName("주문이 정상적으로 생성되는지 확인한다.")
-    void createOrder() throws Exception {
-        OrderRequest request = new OrderRequest("test@example.com",
+    private OrderRequest request;
+
+    @BeforeEach
+    void setUp() {
+        request = new OrderRequest("test@example.com",
                 "경기도 남양주시",
                 "111-111",
                 List.of(
                         new OrderItemRequest(1, 2),
                         new OrderItemRequest(1, 1)
                 ));
+    }
 
+    @Test
+    @DisplayName("주문이 정상적으로 생성되는지 확인한다.")
+    void createOrder() throws Exception {
         mockMvc.perform(post("/orders")
                         .contentType(String.valueOf(MediaType.APPLICATION_JSON))
                         .content(objectMapper.writeValueAsString(request)))
@@ -77,5 +85,31 @@ class OrderControllerTest {
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isBadRequest())
                 .andDo(print());
+    }
+
+    @Test
+    @DisplayName("전체 주문 목록 조회")
+    void getAllOrders() throws Exception {
+        mockMvc.perform(get("/orders"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.resultCode").value("200"))
+                .andExpect(jsonPath("$.msg").value("주문 목록이 조회되었습니다."))
+                .andExpect(jsonPath("$.data").isArray())
+                .andDo(print());
+    }
+
+    @Test
+    @DisplayName("단일 주문 조회 성공")
+    void getSingleOrder() throws Exception {
+        Order order = orderService.createOrder(request);
+        mockMvc.perform(get("/orders/{id}", order.getId()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.resultCode").value("200"))
+                .andExpect(jsonPath("$.msg").value(order.getId() + "번 주문이 조회되었습니다."))
+                .andExpect(jsonPath("$.data.orderId").value(order.getId()))
+                .andExpect(jsonPath("$.data.customerEmail").exists())
+                .andExpect(jsonPath("$.data.shippingAddress").exists())
+                .andExpect(jsonPath("$.data.shippingZipCode").exists())
+                .andExpect(jsonPath("$.data.items").isArray());
     }
 }
