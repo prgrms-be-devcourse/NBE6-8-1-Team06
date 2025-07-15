@@ -7,9 +7,9 @@ import java.util.List;
 
 public record OrderResponse(
         int orderId,
-        String email,
-        String address,
-        String zipCode,
+        String customerEmail,
+        String shippingAddress,
+        String shippingZipCode,
         List<OrderItemResponse> items
 ) {
     public OrderResponse(Order order) {

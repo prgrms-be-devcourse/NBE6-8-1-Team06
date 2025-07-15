@@ -39,6 +39,7 @@ class OrderControllerTest {
         OrderRequest request = new OrderRequest("test@example.com",
                 "경기도 남양주시",
                 "111-111",
+                15000,
                 List.of(
                         new OrderItemRequest(1, 2),
                         new OrderItemRequest(1, 1)
@@ -50,9 +51,9 @@ class OrderControllerTest {
                 .andExpect(handler().handlerType(OrderController.class))
                 .andExpect(jsonPath("$.msg").value("1번 주문이 생성되었습니다."))
                 .andExpect(jsonPath("$.data.orderId").value(1))
-                .andExpect(jsonPath("$.data.email").value("test@example.com"))
-                .andExpect(jsonPath("$.data.address").value("경기도 남양주시"))
-                .andExpect(jsonPath("$.data.zipCode").value("111-111"))
+                .andExpect(jsonPath("$.data.customerEmail").value("test@example.com"))
+                .andExpect(jsonPath("$.data.shippingAddress").value("경기도 남양주시"))
+                .andExpect(jsonPath("$.data.shippingZipCode").value("111-111"))
                 .andExpect(jsonPath("$.data.items.length()").value(2))
                 .andExpect(jsonPath("$.data.items[0].quantity").value(2))
                 .andExpect(jsonPath("$.data.items[1].quantity").value(1));
@@ -62,7 +63,11 @@ class OrderControllerTest {
     @Test
     @DisplayName("주문 생성 시 잘못된 요청이 들어오면 예외가 발생한다.")
     void createOrderWithInvalidRequest() throws Exception {
-        OrderRequest request = new OrderRequest("notEmail", "경기도 남양주시", "111-111", List.of(
+        OrderRequest request = new OrderRequest("notEmail",
+                "경기도 남양주시",
+                "111-111",
+                15000,
+                List.of(
                 new OrderItemRequest(1, 2),
                 new OrderItemRequest(1, 1)
         ));
