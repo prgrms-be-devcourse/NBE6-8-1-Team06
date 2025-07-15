@@ -1,6 +1,7 @@
 package com.coffeeproject.domain.product.product.api;
 
-import com.domain.product.product.service.ProductService;
+import com.coffeeproject.domain.product.product.entity.Product;
+import com.coffeeproject.domain.product.product.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -10,4 +11,3 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class ApiV1ProductController {
     private final ProductService productService;
-}
