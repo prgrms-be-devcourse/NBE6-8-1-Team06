@@ -20,9 +20,6 @@ public record OrderRequest(
         @NotBlank(message = "우편번호는 필수입니다.")
         String shippingZipCode,
 
-        @Min(value = 1, message = "최소 주문 금액은 1원입니다.")
-        int totalAmount,
-
         @Valid
         @NotEmpty(message = "주문 상품이 1개 이상 필요합니다.")
         List<OrderItemRequest> items

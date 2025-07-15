@@ -14,18 +14,20 @@ import org.springframework.transaction.annotation.Transactional;
 public class OrderService {
     private final OrderRepository orderRepository;
 
+    @Transactional
     public Order createOrder(OrderRequest request) {
         Order order = Order.createOrder(
                 request.customerEmail(),
                 request.shippingAddress(),
-                request.shippingZipCode(),
-                request.totalAmount()
+                request.shippingZipCode()
         );
 
         request.items().forEach(itemRequest -> {
             OrderItem orderItem = OrderItem.createOrderItem(order, itemRequest.quantity());
             order.addOrderItem(orderItem);
         });
+
+        order.calculateTotalAmount();
 
         return orderRepository.save(order);
     }
