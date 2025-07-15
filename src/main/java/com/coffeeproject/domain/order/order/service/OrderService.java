@@ -16,15 +16,15 @@ public class OrderService {
 
     public Order createOrder(OrderRequest request) {
         Order order = Order.createOrder(
-                request.email(),
-                request.address(),
-                request.zipCode()
+                request.customerEmail(),
+                request.shippingAddress(),
+                request.shippingZipCode(),
+                request.totalAmount()
         );
 
         request.items().forEach(itemRequest -> {
             OrderItem orderItem = OrderItem.createOrderItem(order, itemRequest.quantity());
             order.addOrderItem(orderItem);
-            // TODO : TOTAL_AMOUNT 계산
         });
 
         return orderRepository.save(order);

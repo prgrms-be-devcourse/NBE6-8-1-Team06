@@ -35,26 +35,20 @@ public class Order extends BaseEntity {
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<OrderItem> orderItems = new ArrayList<>();
 
-    private Order(String customerEmail, String shippingAddress, String shippingZipCode) {
+    private Order(String customerEmail, String shippingAddress, String shippingZipCode, int totalAmount) {
         this.customerEmail = customerEmail;
         this.shippingAddress = shippingAddress;
         this.shippingZipCode = shippingZipCode;
+        this.totalAmount = totalAmount;
         this.status = OrderStatus.PAID;
     }
 
-    public static Order createOrder(String email, String address, String postalCode) {
-        return new Order(email, address, postalCode);
+    public static Order createOrder(String customerEmail, String shippingAddress, String shippingZipCode, int totalAmount) {
+        return new Order(customerEmail, shippingAddress, shippingZipCode, totalAmount);
     }
 
     public void addOrderItem(OrderItem orderItem) {
         orderItems.add(orderItem);
         orderItem.setOrder(this);
     }
-
-//    TODO : 연관관계 설정 후 계산
-//    public void calculateTotalAmount() {
-//        this.totalAmount = orderItems.stream()
-//                .mapToInt(orderItem -> orderItem.getProduct().getPrice() * orderItem.getQuantity())
-//                .sum();
-//    }
 }
