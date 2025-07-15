@@ -9,7 +9,7 @@ public record OrderResponse(
         int orderId,
         String email,
         String address,
-        String postalCode,
+        String zipCode,
         List<OrderItemResponse> items
 ) {
     public OrderResponse(Order order) {
