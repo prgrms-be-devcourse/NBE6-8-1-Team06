@@ -1,13 +1,14 @@
 package com.coffeeproject.domain.product.product.api;
 
+import com.coffeeproject.domain.product.product.dto.ProductDto;
 import com.coffeeproject.domain.product.product.entity.Product;
 import com.coffeeproject.domain.product.product.service.ProductService;
+import com.coffeeproject.global.rsData.RsData;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -17,14 +18,31 @@ import java.util.List;
 public class ApiV1ProductController {
     private final ProductService productService;
 
+    record ProductRequestBody(
+            @NotBlank
+            String name,
+            @NotBlank
+            String description,
+            @NotBlank
+            int price
+    ) {}
 
     @PostMapping
     @Transactional
-    public Product createProduct(Product product) {
-        return productService.savegit(product);
+   // @Opitonal(summary = "상품 등록")
+    public RsData<ProductDto> createProduct( ProductRequestBody  reqBody) {
+        Product product = productService.write(
+                new Product(reqBody.name(), reqBody.description(), reqBody.price())
+        );
+        return new RsData<>(
+                "S-1",
+                "상품이 등록되었습니다.",
+                new ProductDto(product)
+        );
     }
     @GetMapping
     @Transactional
+    //@Optional (summary = "모든 상품 조회")
     public List<Product> getAllProducts()
     {
         return productService.findAll();
@@ -32,8 +50,6 @@ public class ApiV1ProductController {
 
     @GetMapping({"/{id}"})
     @Transactional
-    public Product getProductById(int id) {
+    public Product getProductById(@PathVariable Integer id) {
         return productService.findById(id).orElse(null);
-    }
-}
-
+    }}

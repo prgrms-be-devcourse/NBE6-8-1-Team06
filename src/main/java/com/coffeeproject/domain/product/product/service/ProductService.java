@@ -14,7 +14,7 @@ import java.util.Optional;
 public class ProductService {
 public final ProductRepository productRepository;
 
-    public Product save(Product product) {
+    public Product write(Product product) {
         return productRepository.save(product);
     }
 
