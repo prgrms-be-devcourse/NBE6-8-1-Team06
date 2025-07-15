@@ -153,7 +153,7 @@ graph TD
 | delivery_id           | Int           | 배송 묶음 고유 식별자                  |
 | customer_email        | String        | 이 배송 묶음의 주문자 이메일            |
 | shipping_address      | String        | 이 배송 묶음의 공통 배송 주소           |
-| items                | List<OrderItem>| 배송에 포함된 모든 제품들 |
+| items                | List\<OrderItem>| 배송에 포함된 모든 제품들 |
 | total_delivery_amount | Int           | 이 배송 묶음 내 모든 주문의 총합 금액     |
 | status                | String        | 배송 묶음의 상태 (예: "배송 준비 중", "배송 완료") |
 | **created_at**        | LocalDateTime |                                   |
