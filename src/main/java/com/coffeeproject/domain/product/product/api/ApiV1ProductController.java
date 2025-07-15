@@ -23,19 +23,18 @@ public class ApiV1ProductController {
             String name,
             @NotBlank
             String description,
-            @NotBlank
+
             int price
     ) {}
 
     @PostMapping
     @Transactional
-   // @Opitonal(summary = "상품 등록")
-    public RsData<ProductDto> createProduct( ProductRequestBody  reqBody) {
+    public RsData<ProductDto> createProduct(@RequestBody ProductRequestBody reqBody) {
         Product product = productService.write(
                 new Product(reqBody.name(), reqBody.description(), reqBody.price())
         );
         return new RsData<>(
-                "S-1",
+                "1",
                 "상품이 등록되었습니다.",
                 new ProductDto(product)
         );
