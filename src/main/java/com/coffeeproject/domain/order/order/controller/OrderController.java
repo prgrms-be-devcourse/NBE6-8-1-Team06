@@ -5,6 +5,7 @@ import com.coffeeproject.domain.order.order.dto.OrderResponse;
 import com.coffeeproject.domain.order.order.entity.Order;
 import com.coffeeproject.domain.order.order.service.OrderService;
 import com.coffeeproject.global.rsData.RsData;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,7 +19,7 @@ public class OrderController {
      private final OrderService orderService;
 
      @PostMapping
-     public RsData<OrderResponse> createOrder(@RequestBody OrderRequest request) {
+     public RsData<OrderResponse> createOrder(@Valid @RequestBody OrderRequest request) {
          Order order = orderService.createOrder(request);
          return new RsData<>(
                  "200",
