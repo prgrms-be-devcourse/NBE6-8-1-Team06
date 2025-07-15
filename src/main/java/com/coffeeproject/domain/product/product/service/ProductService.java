@@ -25,5 +25,13 @@ public final ProductRepository productRepository;
     public Optional<Product> findById(int id) {
         return productRepository.findById(id);
     }
+    public int count() {
+        return (int) productRepository.count();
+    }
+
+    public Optional<Product> findLatest() {
+        return productRepository.findFirstByOrderByIdDesc();
+    }
+
 
 }
