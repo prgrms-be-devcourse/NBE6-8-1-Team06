@@ -21,7 +21,7 @@ public class ApiV1ProductController {
     @PostMapping
     @Transactional
     public Product createProduct(Product product) {
-        return productService.save(product);
+        return productService.savegit(product);
     }
     @GetMapping
     @Transactional
