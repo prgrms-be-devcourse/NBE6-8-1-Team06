@@ -38,7 +38,6 @@ public class ApiV1ProductControllerTest {
     @BeforeEach
     void setUp() {
         // 테스트를 위한 초기 상품 데이터 삭제
-        productService.deleteAll();
         productService.write("커피", "쓴 커피", 10000);
         productService.write("차", "달콤한 차", 8000);
         productService.write("케이크", "달콤한 케이크", 12000);
