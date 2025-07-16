@@ -19,7 +19,6 @@ public class DeliveryService {
                 Delivery.builder()
                         .customerEmail(orderList.getFirst().getCustomerEmail())
                         .shippingAddress(orderList.getFirst().getShippingAddress())
-                        .orders(new ArrayList<>(orderList))// Delivery 엔티티의 필드에서 기본값을 제거후 새로 할당 하여 테스트가 통과됨
                         .totalPrice(orderList.stream().mapToInt(Order::getTotalPrice).sum())
                         .status(Delivery.DeliveryStatus.PENDING)
                         .build()
