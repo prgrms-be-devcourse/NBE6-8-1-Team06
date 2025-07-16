@@ -38,7 +38,7 @@ public class OrderController {
     }
 
     @GetMapping("/{id}")
-    public RsData<OrderResponse> getOrder(@PathVariable int id) {
+    public RsData<OrderResponse> getOrder(@PathVariable(value = "id") int id) {
         Order order = orderService.getOrderById(id);
         return new RsData<>("200",
                 "%d번 주문이 조회되었습니다.".formatted(id),
