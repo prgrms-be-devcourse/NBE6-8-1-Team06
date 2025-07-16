@@ -58,8 +58,6 @@ public class ApiV1ProductControllerTest {
                                 """)
         ).andDo(print());
 
-        Product product = productService.findLatest().get();
-
         String responseBody = resultActions.andReturn().getResponse().getContentAsString();
         System.out.println(responseBody);
 
@@ -122,10 +120,10 @@ public class ApiV1ProductControllerTest {
         resultActions
                 .andExpect(handler().handlerType(ApiV1ProductController.class))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(product.getId()))
-                .andExpect(jsonPath("$.name").value(product.getName()))
-                .andExpect(jsonPath("$.description").value(product.getDescription()))
-                .andExpect(jsonPath("$.price").value(product.getPrice()));
+                .andExpect(jsonPath("$.data.id").value(product.getId()))
+                .andExpect(jsonPath("$.data.name").value(product.getName()))
+                .andExpect(jsonPath("$.data.description").value(product.getDescription()))
+                .andExpect(jsonPath("$.data.price").value(product.getPrice()));
 
     }
 

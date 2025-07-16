@@ -24,28 +24,43 @@ public class ApiV1ProductController {
             String description,
 
             int price
-    ) {}
+    ) {
+    }
 
     @PostMapping
     @Transactional
     public RsData<ProductDto> createProduct(@RequestBody ProductRequestBody reqBody) {
-        Product product = productService.write(reqBody.name(), reqBody.description(), reqBody.price());
+
+        Product product =productService.write(reqBody.name(), reqBody.description(), reqBody.price());
         return new RsData<>(
                 "201",
                 "상품이 등록되었습니다.",
                 new ProductDto(product)
         );
     }
+
     @GetMapping
     @Transactional
     //@Optional (summary = "모든 상품 조회")
-    public List<Product> getAllProducts()
-    {
-        return productService.findAll();
+    public RsData<List<Product>> getAllProducts() {
+        List<Product> products = productService.findAll();
+        if (products.isEmpty()) {return   new RsData<>("404", "상품이 없습니다.", null);}
+        else {
+            return new RsData<>("200", "상품들을 찾았습니다.", products);
+        }
     }
 
     @GetMapping({"/{id}"})
     @Transactional
-    public Product getProductById(@PathVariable(value = "id") int id) {
-        return productService.findById(id).orElse(null);
-    }}
+    public RsData<Product> getProductById(@PathVariable(value = "id") int id) {
+        Product product = productService.findById(id).orElse(null);
+        if (product == null) {
+            return new RsData<>("404", "상품을 찾을 수 없습니다.", null);
+        }
+        else {
+            return new RsData<>("200", "상품을 찾았습니다.", product);
+
+        }
+    }
+
+}
