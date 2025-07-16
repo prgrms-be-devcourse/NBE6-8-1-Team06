@@ -51,6 +51,8 @@ public class OrderService {
 
     @Transactional
     public void deleteOrder(int id) {
-        orderRepository.deleteById(id);
+        Order order = orderRepository.findById(id)
+                .orElseThrow(() -> new ServiceException("400", id + "번 주문이 존재하지 않습니다."));
+        orderRepository.delete(order);
     }
 }

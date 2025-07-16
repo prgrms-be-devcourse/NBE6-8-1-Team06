@@ -167,4 +167,16 @@ class OrderControllerTest {
             assertThat(deletedItem).isNull();
         }
     }
+
+    @Test
+    @DisplayName("존재하지 않는 주문 ID 삭제 시 예외 반환")
+    void deleteOrderWithInvalidId() throws Exception {
+        int invalidId = 9999;
+
+        mockMvc.perform(delete("/orders/{id}", invalidId))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.resultCode").value("400"))
+                .andExpect(jsonPath("$.msg").value(invalidId + "번 주문이 존재하지 않습니다."))
+                .andDo(print());
+    }
 }
