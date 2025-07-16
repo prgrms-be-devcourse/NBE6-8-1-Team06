@@ -2,6 +2,7 @@ package com.coffeeproject.domain.order.order.controller;
 
 import com.coffeeproject.domain.order.order.dto.OrderRequest;
 import com.coffeeproject.domain.order.order.dto.OrderResponse;
+import com.coffeeproject.domain.order.order.dto.OrderUpdateRequest;
 import com.coffeeproject.domain.order.order.entity.Order;
 import com.coffeeproject.domain.order.order.service.OrderService;
 import com.coffeeproject.global.rsData.RsData;
@@ -15,17 +16,17 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/orders")
 public class OrderController {
-     private final OrderService orderService;
+    private final OrderService orderService;
 
-     @PostMapping
-     public RsData<OrderResponse> createOrder(@Valid @RequestBody OrderRequest request) {
-         Order order = orderService.createOrder(request);
-         return new RsData<>(
-                 "200",
-                 "%d번 주문이 생성되었습니다.".formatted(order.getId()),
-                 new OrderResponse(order)
-         );
-     }
+    @PostMapping
+    public RsData<OrderResponse> createOrder(@Valid @RequestBody OrderRequest request) {
+        Order order = orderService.createOrder(request);
+        return new RsData<>(
+                "200",
+                "%d번 주문이 생성되었습니다.".formatted(order.getId()),
+                new OrderResponse(order)
+        );
+    }
 
     @GetMapping
     public RsData<List<OrderResponse>> getOrders() {
@@ -52,6 +53,18 @@ public class OrderController {
         return new RsData<>("200",
                 "%d번 주문이 삭제되었습니다.".formatted(id),
                 null
+        );
+    }
+
+    @PutMapping("/{id}")
+    public RsData<OrderResponse> updateOrder(
+            @PathVariable(value = "id") int id,
+            @Valid @RequestBody OrderUpdateRequest request) {
+
+        Order order = orderService.updateOrder(id, request);
+        return new RsData<>("200",
+                "%d번 주문이 수정되었습니다.".formatted(id),
+                new OrderResponse(order)
         );
     }
 }

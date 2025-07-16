@@ -31,7 +31,7 @@ public class Order extends BaseEntity {
     @Column(nullable = false)
     private int totalPrice;
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItem> orderItems = new ArrayList<>();
 
     private Order(String customerEmail, String shippingAddress, String shippingZipCode) {
@@ -51,9 +51,21 @@ public class Order extends BaseEntity {
                 .sum();
     }
 
-
     public void addOrderItem(OrderItem orderItem) {
         orderItems.add(orderItem);
         orderItem.setOrder(this);
+    }
+
+    public void updateShippingInfo(String shippingAddress, String shippingZipCode) {
+        this.shippingAddress = shippingAddress;
+        this.shippingZipCode = shippingZipCode;
+    }
+
+    public void updateStatus(OrderStatus status) {
+        this.status = status;
+    }
+
+    public void clearOrderItems() {
+        this.orderItems.clear();
     }
 }
