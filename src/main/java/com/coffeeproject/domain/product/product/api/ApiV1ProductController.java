@@ -46,6 +46,6 @@ public class ApiV1ProductController {
 
     @GetMapping({"/{id}"})
     @Transactional
-    public Product getProductById(@PathVariable Integer id) {
+    public Product getProductById(@PathVariable(value = "id") int id) {
         return productService.findById(id).orElse(null);
     }}

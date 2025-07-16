@@ -113,13 +113,13 @@ public class ApiV1ProductControllerTest {
     @DisplayName("상품 단건 조회")
     void t3 ()throws Exception {
 
-        int id = 10;
+
+        Product product = productService.findLatest().get();
         ResultActions resultActions = mockMvc
                 .perform(
-                        get("/api/v1/products/" + id)
+                        get("/api/v1/products/" + product.getId())
                 )
                 .andDo(print());
-        Product product = productService.findById(id).get();
         resultActions
                 .andExpect(handler().handlerType(ApiV1ProductController.class))
                 .andExpect(status().isOk())
