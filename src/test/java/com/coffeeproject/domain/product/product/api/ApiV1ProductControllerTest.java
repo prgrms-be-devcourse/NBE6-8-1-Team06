@@ -3,6 +3,7 @@ package com.coffeeproject.domain.product.product.api;
 import com.coffeeproject.domain.product.product.entity.Product;
 import com.coffeeproject.domain.product.product.service.ProductService;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +35,15 @@ public class ApiV1ProductControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
+    @BeforeEach
+    void setUp() {
+        // 테스트를 위한 초기 상품 데이터 삭제
+        productService.deleteAll();
+        productService.write("커피", "쓴 커피", 10000);
+        productService.write("차", "달콤한 차", 8000);
+        productService.write("케이크", "달콤한 케이크", 12000);
+        productService.write("쿠키", "바삭한 쿠키", 5000);
+    }
 
     @Test
     @DisplayName("상품 등록")
@@ -69,12 +79,10 @@ public class ApiV1ProductControllerTest {
     @DisplayName("상품 다건 조회")
     void t2() throws Exception {
 
-        productService.write("커피", "쓴 커피", 10000);
-        productService.write("차", "달콤한 차", 8000);
-        productService.write("케이크", "달콤한 케이크", 12000);
-        productService.write("쿠키", "바삭한 쿠키", 5000);
+
 
         List<Product> products = productService.findAll();
+
         ResultActions resultActions = mockMvc
                 .perform(
                         get("/api/v1/products")
@@ -105,12 +113,8 @@ public class ApiV1ProductControllerTest {
     @Test
     @DisplayName("상품 단건 조회")
     void t3 ()throws Exception {
-        productService.write("커피", "쓴 커피", 10000);
-        productService.write("차", "달콤한 차", 8000);
-        productService.write("케이크", "달콤한 케이크", 12000);
-        productService.write("쿠키", "바삭한 쿠키", 5000);
 
-        int id = 1;
+        int id = 10;
         ResultActions resultActions = mockMvc
                 .perform(
                         get("/api/v1/products/" + id)
@@ -124,7 +128,6 @@ public class ApiV1ProductControllerTest {
                 .andExpect(jsonPath("$.name").value(product.getName()))
                 .andExpect(jsonPath("$.description").value(product.getDescription()))
                 .andExpect(jsonPath("$.price").value(product.getPrice()));
-
 
     }
 
