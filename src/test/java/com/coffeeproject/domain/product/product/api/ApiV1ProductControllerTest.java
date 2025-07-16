@@ -2,7 +2,6 @@ package com.coffeeproject.domain.product.product.api;
 
 import com.coffeeproject.domain.product.product.entity.Product;
 import com.coffeeproject.domain.product.product.service.ProductService;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,7 +13,6 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -59,6 +57,7 @@ public class ApiV1ProductControllerTest {
                                 }
                                 """)
         ).andDo(print());
+
         Product product = productService.findLatest().get();
 
         String responseBody = resultActions.andReturn().getResponse().getContentAsString();
@@ -105,7 +104,7 @@ public class ApiV1ProductControllerTest {
                     .andExpect(jsonPath("$[%d].description".formatted(i)).value(product.getDescription()))
                     .andExpect(jsonPath("$[%d].price".formatted(i)).value(product.getPrice()));
         }
-        Product product = products.get(0);
+
 
     }
 
