@@ -3,6 +3,7 @@ package com.coffeeproject.domain.product.product.service;
 
 import com.coffeeproject.domain.product.product.entity.Product;
 import com.coffeeproject.domain.product.product.repository.ProductRepository;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -30,9 +31,11 @@ public final ProductRepository productRepository;
         return (int) productRepository.count();
     }
 
+
     public Optional<Product> findLatest() {
         return productRepository.findFirstByOrderByIdDesc();
     }
+
 
 
 }

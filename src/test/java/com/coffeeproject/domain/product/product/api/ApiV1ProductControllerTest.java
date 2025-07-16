@@ -40,6 +40,7 @@ public class ApiV1ProductControllerTest {
         productService.write("차", "달콤한 차", 8000);
         productService.write("케이크", "달콤한 케이크", 12000);
         productService.write("쿠키", "바삭한 쿠키", 5000);
+
     }
 
     @Test
@@ -57,8 +58,6 @@ public class ApiV1ProductControllerTest {
                                 }
                                 """)
         ).andDo(print());
-
-        Product product = productService.findLatest().get();
 
         String responseBody = resultActions.andReturn().getResponse().getContentAsString();
         System.out.println(responseBody);
@@ -80,6 +79,17 @@ public class ApiV1ProductControllerTest {
 
 
         List<Product> products = productService.findAll();
+        System.out.println("==============================================================");
+        System.out.println(products.size());
+        for (Product product : products) {
+            System.out.println("상품 ID: " + product.getId());
+            System.out.println("상품 이름: " + product.getName());
+            System.out.println("상품 설명: " + product.getDescription());
+            System.out.println("상품 가격: " + product.getPrice());
+            System.out.println("==============================================================");
+        }
+        System.out.println("==============================================================");
+
 
         ResultActions resultActions = mockMvc
                 .perform(
@@ -93,16 +103,17 @@ public class ApiV1ProductControllerTest {
         resultActions
                 .andExpect(handler().handlerType(ApiV1ProductController.class))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(products.size()));
+                .andExpect(jsonPath("$.data.length()").value(products.size()));
+
 
 
         for (int i = 0; i < products.size(); i++) {
             Product product = products.get(i);
             resultActions
-                    .andExpect(jsonPath("$[%d].id".formatted(i)).value(product.getId()))
-                    .andExpect(jsonPath("$[%d].name".formatted(i)).value(product.getName()))
-                    .andExpect(jsonPath("$[%d].description".formatted(i)).value(product.getDescription()))
-                    .andExpect(jsonPath("$[%d].price".formatted(i)).value(product.getPrice()));
+                    .andExpect(jsonPath("$.data.[%d].id".formatted(i)).value(product.getId()))
+                    .andExpect(jsonPath("$.data.[%d].name".formatted(i)).value(product.getName()))
+                    .andExpect(jsonPath("$.data.[%d].description".formatted(i)).value(product.getDescription()))
+                    .andExpect(jsonPath("$.data.[%d].price".formatted(i)).value(product.getPrice()));
         }
 
 
@@ -122,10 +133,10 @@ public class ApiV1ProductControllerTest {
         resultActions
                 .andExpect(handler().handlerType(ApiV1ProductController.class))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(product.getId()))
-                .andExpect(jsonPath("$.name").value(product.getName()))
-                .andExpect(jsonPath("$.description").value(product.getDescription()))
-                .andExpect(jsonPath("$.price").value(product.getPrice()));
+                .andExpect(jsonPath("$.data.id").value(product.getId()))
+                .andExpect(jsonPath("$.data.name").value(product.getName()))
+                .andExpect(jsonPath("$.data.description").value(product.getDescription()))
+                .andExpect(jsonPath("$.data.price").value(product.getPrice()));
 
     }
 
