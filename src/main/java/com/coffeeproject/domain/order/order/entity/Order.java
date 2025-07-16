@@ -64,8 +64,4 @@ public class Order extends BaseEntity {
     public void updateStatus(OrderStatus status) {
         this.status = status;
     }
-
-    public void clearOrderItems() {
-        this.orderItems.clear();
-    }
 }
