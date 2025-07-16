@@ -14,8 +14,8 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/orders")
-public class OrderController {
+@RequestMapping("/api/v1/orders")
+public class ApiV1OrderController {
     private final OrderService orderService;
 
     @PostMapping

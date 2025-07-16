@@ -33,7 +33,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
-class OrderControllerTest {
+class ApiV1OrderControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -73,11 +73,11 @@ class OrderControllerTest {
     @Test
     @DisplayName("주문이 정상적으로 생성되는지 확인한다.")
     void createOrder() throws Exception {
-        mockMvc.perform(post("/orders")
+        mockMvc.perform(post("/api/v1/orders")
                         .contentType(String.valueOf(MediaType.APPLICATION_JSON))
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
-                .andExpect(handler().handlerType(OrderController.class))
+                .andExpect(handler().handlerType(ApiV1OrderController.class))
                 .andExpect(jsonPath("$.data.orderId").exists())
                 .andExpect(jsonPath("$.data.totalPrice").value(11000))
                 .andExpect(jsonPath("$.data.items.length()").value(2))
@@ -98,7 +98,7 @@ class OrderControllerTest {
                 )
         );
 
-        mockMvc.perform(post("/orders")
+        mockMvc.perform(post("/api/v1/orders")
                         .contentType(String.valueOf(MediaType.APPLICATION_JSON))
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isBadRequest())
@@ -108,7 +108,7 @@ class OrderControllerTest {
     @Test
     @DisplayName("전체 주문 목록 조회")
     void getAllOrders() throws Exception {
-        mockMvc.perform(get("/orders"))
+        mockMvc.perform(get("/api/v1/orders"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.resultCode").value("200"))
                 .andExpect(jsonPath("$.msg").value("주문 목록이 조회되었습니다."))
@@ -120,7 +120,7 @@ class OrderControllerTest {
     @DisplayName("단일 주문 조회 성공")
     void getSingleOrder() throws Exception {
         Order order = orderService.createOrder(request.toServiceRequest());
-        mockMvc.perform(get("/orders/{id}", order.getId()))
+        mockMvc.perform(get("/api/v1/orders/{id}", order.getId()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.resultCode").value("200"))
                 .andExpect(jsonPath("$.msg").value(order.getId() + "번 주문이 조회되었습니다."))
@@ -153,7 +153,7 @@ class OrderControllerTest {
                 .map(OrderItem::getId)
                 .toList();
 
-        mockMvc.perform(delete("/orders/{id}", orderId))
+        mockMvc.perform(delete("/api/v1/orders/{id}", orderId))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.resultCode").value("200"))
                 .andExpect(jsonPath("$.msg").value(orderId + "번 주문이 삭제되었습니다."));
@@ -173,7 +173,7 @@ class OrderControllerTest {
     void deleteOrderWithInvalidId() throws Exception {
         int invalidId = 9999;
 
-        mockMvc.perform(delete("/orders/{id}", invalidId))
+        mockMvc.perform(delete("/api/v1/orders/{id}", invalidId))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.resultCode").value("400"))
                 .andExpect(jsonPath("$.msg").value(invalidId + "번 주문이 존재하지 않습니다."))
