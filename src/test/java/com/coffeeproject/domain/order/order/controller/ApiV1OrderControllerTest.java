@@ -1,10 +1,13 @@
 package com.coffeeproject.domain.order.order.controller;
 
 import com.coffeeproject.domain.order.order.controller.dto.OrderCreateRequest;
+import com.coffeeproject.domain.order.order.controller.dto.OrderUpdateRequest;
 import com.coffeeproject.domain.order.order.entity.Order;
+import com.coffeeproject.domain.order.order.enums.OrderStatus;
 import com.coffeeproject.domain.order.order.service.OrderService;
 import com.coffeeproject.domain.order.orderitem.OrderItem;
 import com.coffeeproject.domain.order.orderitem.dto.OrderItemRequest;
+import com.coffeeproject.domain.order.orderitem.dto.OrderUpdateItemRequest;
 import com.coffeeproject.domain.product.product.entity.Product;
 import com.coffeeproject.domain.product.product.repository.ProductRepository;
 import com.coffeeproject.global.exception.ServiceException;
@@ -25,6 +28,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -178,5 +182,57 @@ class ApiV1OrderControllerTest {
                 .andExpect(jsonPath("$.resultCode").value("400"))
                 .andExpect(jsonPath("$.msg").value(invalidId + "번 주문이 존재하지 않습니다."))
                 .andDo(print());
+    }
+
+    @Test
+    @DisplayName("주문 수정 성공")
+    void updateOrder() throws Exception {
+        Order order = orderService.createOrder(request.toServiceRequest());
+
+        OrderUpdateRequest request = new OrderUpdateRequest(
+                "새 배송 주소",
+                "333-333",
+                OrderStatus.PAID,
+                List.of(new OrderUpdateItemRequest(product1.getId(), 5))
+        );
+
+        mockMvc.perform(put("/api/v1/orders/{id}", order.getId())
+                        .contentType(String.valueOf(MediaType.APPLICATION_JSON))
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.resultCode").value("200"))
+                .andExpect(jsonPath("$.msg").value(order.getId() + "번 주문이 수정되었습니다."))
+                .andExpect(jsonPath("$.data.shippingAddress").value("새 배송 주소"))
+                .andExpect(jsonPath("$.data.shippingZipCode").value("333-333"))
+                .andExpect(jsonPath("$.data.totalPrice").value(15000))
+                .andExpect(jsonPath("$.data.items[0].productId").value(product1.getId()))
+                .andExpect(jsonPath("$.data.items[0].quantity").value(5))
+                .andExpect(jsonPath("$.data.items[1]").doesNotExist());
+
+        em.flush();
+        em.clear();
+
+        OrderItem deletedItem = em.find(OrderItem.class, product2.getId());
+        assertThat(deletedItem).isNull(); // 두 번째 상품은 삭제되었는지 확인
+    }
+
+    @Test
+    @DisplayName("유효하지 않은 입력값으로 수정 요청 시 예외 반환")
+    void updateOrder_invalidRequest() throws Exception {
+        Order order = orderService.createOrder(request.toServiceRequest());
+
+        OrderUpdateRequest request = new OrderUpdateRequest(
+                "",  // 주소 누락
+                "",  // 우편번호 누락
+                null,
+                List.of()
+        );
+
+        mockMvc.perform(put("/api/v1/orders/{id}", order.getId())
+                        .contentType(String.valueOf(MediaType.APPLICATION_JSON))
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.resultCode").value("400-1"))
+                .andExpect(jsonPath("$.msg").value(containsString("필수입니다.")));
     }
 }
