@@ -1,6 +1,6 @@
 package com.coffeeproject.domain.order.order.controller;
 
-import com.coffeeproject.domain.order.order.dto.OrderRequest;
+import com.coffeeproject.domain.order.order.controller.dto.OrderCreateRequest;
 import com.coffeeproject.domain.order.order.entity.Order;
 import com.coffeeproject.domain.order.order.service.OrderService;
 import com.coffeeproject.domain.order.orderitem.OrderItem;
@@ -50,7 +50,7 @@ class OrderControllerTest {
     @Autowired
     private EntityManager em;
 
-    private OrderRequest request;
+    private OrderCreateRequest request;
     private Product product1;
     private Product product2;
 
@@ -59,7 +59,7 @@ class OrderControllerTest {
         product1 = productRepository.save(new Product("아메리카노", "커피1", 3000));
         product2 = productRepository.save(new Product("에스프레소", "커피2", 5000));
 
-        request = new OrderRequest(
+        request = new OrderCreateRequest(
                 "test@example.com",
                 "경기도 남양주시",
                 "111-111",
@@ -88,7 +88,7 @@ class OrderControllerTest {
     @Test
     @DisplayName("주문 생성 시 잘못된 요청이 들어오면 예외가 발생한다.")
     void createOrderWithInvalidRequest() throws Exception {
-        OrderRequest request = new OrderRequest(
+        OrderCreateRequest request = new OrderCreateRequest(
                 "notEmail",
                 "경기도 남양주시",
                 "111-111",
@@ -119,7 +119,7 @@ class OrderControllerTest {
     @Test
     @DisplayName("단일 주문 조회 성공")
     void getSingleOrder() throws Exception {
-        Order order = orderService.createOrder(request);
+        Order order = orderService.createOrder(request.toServiceRequest());
         mockMvc.perform(get("/orders/{id}", order.getId()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.resultCode").value("200"))
@@ -143,7 +143,7 @@ class OrderControllerTest {
     @Test
     @DisplayName("주문 삭제 시 연관된 주문 항목도 모두 삭제된다.")
     void deleteOrder() throws Exception {
-        Order order = orderService.createOrder(request);
+        Order order = orderService.createOrder(request.toServiceRequest());
         int orderId = order.getId();
 
         int itemCountBefore = order.getOrderItems().size();
