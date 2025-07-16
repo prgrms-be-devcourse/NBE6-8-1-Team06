@@ -1,5 +1,6 @@
 package com.coffeeproject.domain.delivery.entity;
 
+import com.coffeeproject.domain.order.order.entity.Order;
 import com.coffeeproject.global.jpa.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -29,7 +30,6 @@ public class Delivery extends BaseEntity {
             joinColumns = @JoinColumn(name = "delivery_id"),
             inverseJoinColumns = @JoinColumn(name = "order_id")
     )
-    //FIXME : 이후 실제 Order 엔티티를 사용해야합니다.
     private List<Order> orders;
     private int totalPrice;
     @Enumerated(EnumType.STRING)

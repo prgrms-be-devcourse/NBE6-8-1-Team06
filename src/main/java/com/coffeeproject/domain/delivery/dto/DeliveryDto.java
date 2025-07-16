@@ -1,7 +1,7 @@
 package com.coffeeproject.domain.delivery.dto;
 
 import com.coffeeproject.domain.delivery.entity.Delivery;
-import com.coffeeproject.domain.delivery.entity.Order;
+import com.coffeeproject.domain.order.order.entity.Order;
 import jakarta.validation.constraints.NotBlank;
 
 import java.util.List;

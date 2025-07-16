@@ -1,9 +1,9 @@
 package com.coffeeproject.domain.delivery.api;
 
 import com.coffeeproject.domain.delivery.entity.Delivery;
-import com.coffeeproject.domain.delivery.entity.Order;
 import com.coffeeproject.domain.delivery.repository.DeliveryRepository;
 import com.coffeeproject.domain.delivery.service.DeliveryService;
+import com.coffeeproject.domain.order.order.entity.Order;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

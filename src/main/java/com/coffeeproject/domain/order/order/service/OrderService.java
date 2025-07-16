@@ -2,10 +2,10 @@ package com.coffeeproject.domain.order.order.service;
 
 import com.coffeeproject.domain.order.order.dto.OrderRequest;
 import com.coffeeproject.domain.order.order.entity.Order;
-import com.coffeeproject.domain.order.order.entity.Product;
 import com.coffeeproject.domain.order.order.repository.OrderRepository;
-import com.coffeeproject.domain.order.order.repository.ProductRepository;
 import com.coffeeproject.domain.order.orderitem.OrderItem;
+import com.coffeeproject.domain.product.product.entity.Product;
+import com.coffeeproject.domain.product.product.repository.ProductRepository;
 import com.coffeeproject.global.exception.ServiceException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,7 +18,6 @@ import java.util.List;
 @Transactional(readOnly = true)
 public class OrderService {
     private final OrderRepository orderRepository;
-    //fixme 실제 상품 레포지토리로 import 변경 필요
     private final ProductRepository productRepository;
 
     @Transactional

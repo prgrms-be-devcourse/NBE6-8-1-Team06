@@ -10,7 +10,7 @@ public record OrderResponse(
         String customerEmail,
         String shippingAddress,
         String shippingZipCode,
-        int totalAmount,
+        int totalPrice,
         List<OrderItemResponse> items
 ) {
     public OrderResponse(Order order) {
@@ -19,7 +19,7 @@ public record OrderResponse(
                 order.getCustomerEmail(),
                 order.getShippingAddress(),
                 order.getShippingZipCode(),
-                order.getTotalAmount(),
+                order.getTotalPrice(),
                 order.getOrderItems()
                         .stream()
                         .map(OrderItemResponse::new)

@@ -1,7 +1,7 @@
 package com.coffeeproject.domain.order.orderitem;
 
 import com.coffeeproject.domain.order.order.entity.Order;
-import com.coffeeproject.domain.order.order.entity.Product;
+import com.coffeeproject.domain.product.product.entity.Product;
 import com.coffeeproject.global.jpa.entity.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

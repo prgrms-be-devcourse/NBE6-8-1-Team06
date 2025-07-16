@@ -4,33 +4,32 @@ import com.coffeeproject.domain.order.order.enums.OrderStatus;
 import com.coffeeproject.domain.order.orderitem.OrderItem;
 import com.coffeeproject.global.jpa.entity.BaseEntity;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Getter
 @Entity
-@Table(name = "orders")
+@Builder
+@AllArgsConstructor
+@Table(name ="customer_order")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Order extends BaseEntity {
     @Column(length = 50, nullable = false)
     private String customerEmail;
 
-    @Column(length = 100, nullable = false)
+    @Column(length = 100)
     private String shippingAddress;
 
-    @Column(length = 20, nullable = false)
+    @Column(length = 20)
     private String shippingZipCode;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
     private OrderStatus status;
 
     @Column(nullable = false)
-    private int totalAmount;
+    private int totalPrice;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<OrderItem> orderItems = new ArrayList<>();
@@ -47,7 +46,7 @@ public class Order extends BaseEntity {
     }
 
     public void calculateTotalAmount() {
-        this.totalAmount = orderItems.stream()
+        this.totalPrice = orderItems.stream()
                 .mapToInt(OrderItem::getSubtotalAmount)
                 .sum();
     }

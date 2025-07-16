@@ -2,10 +2,10 @@ package com.coffeeproject.domain.order.order.controller;
 
 import com.coffeeproject.domain.order.order.dto.OrderRequest;
 import com.coffeeproject.domain.order.order.entity.Order;
-import com.coffeeproject.domain.order.order.entity.Product;
-import com.coffeeproject.domain.order.order.repository.ProductRepository;
 import com.coffeeproject.domain.order.order.service.OrderService;
 import com.coffeeproject.domain.order.orderitem.dto.OrderItemRequest;
+import com.coffeeproject.domain.product.product.entity.Product;
+import com.coffeeproject.domain.product.product.repository.ProductRepository;
 import com.coffeeproject.global.exception.ServiceException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -74,7 +74,7 @@ class OrderControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(handler().handlerType(OrderController.class))
                 .andExpect(jsonPath("$.data.orderId").exists())
-                .andExpect(jsonPath("$.data.totalAmount").value(11000))
+                .andExpect(jsonPath("$.data.totalPrice").value(11000))
                 .andExpect(jsonPath("$.data.items.length()").value(2))
                 .andExpect(jsonPath("$.data.items[0].quantity").value(2))
                 .andExpect(jsonPath("$.data.items[1].quantity").value(1));
@@ -123,7 +123,7 @@ class OrderControllerTest {
                 .andExpect(jsonPath("$.data.customerEmail").exists())
                 .andExpect(jsonPath("$.data.shippingAddress").exists())
                 .andExpect(jsonPath("$.data.shippingZipCode").exists())
-                .andExpect(jsonPath("$.data.totalAmount").value(11000))
+                .andExpect(jsonPath("$.data.totalPrice").value(11000))
                 .andExpect(jsonPath("$.data.items").isArray());
     }
 

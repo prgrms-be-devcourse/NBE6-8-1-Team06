@@ -1,8 +1,8 @@
 package com.coffeeproject.domain.delivery.service;
 
 import com.coffeeproject.domain.delivery.entity.Delivery;
-import com.coffeeproject.domain.delivery.entity.Order;
 import com.coffeeproject.domain.delivery.repository.DeliveryRepository;
+import com.coffeeproject.domain.order.order.entity.Order;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
