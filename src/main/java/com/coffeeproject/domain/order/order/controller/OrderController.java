@@ -45,4 +45,13 @@ public class OrderController {
                 new OrderResponse(order)
         );
     }
+
+    @DeleteMapping("/{id}")
+    public RsData<Void> deleteOrder(@PathVariable(value = "id") int id) {
+        orderService.deleteOrder(id);
+        return new RsData<>("200",
+                "%d번 주문이 삭제되었습니다.".formatted(id),
+                null
+        );
+    }
 }
