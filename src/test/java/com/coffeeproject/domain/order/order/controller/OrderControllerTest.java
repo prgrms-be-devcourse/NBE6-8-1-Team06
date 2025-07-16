@@ -3,11 +3,13 @@ package com.coffeeproject.domain.order.order.controller;
 import com.coffeeproject.domain.order.order.dto.OrderRequest;
 import com.coffeeproject.domain.order.order.entity.Order;
 import com.coffeeproject.domain.order.order.service.OrderService;
+import com.coffeeproject.domain.order.orderitem.OrderItem;
 import com.coffeeproject.domain.order.orderitem.dto.OrderItemRequest;
 import com.coffeeproject.domain.product.product.entity.Product;
 import com.coffeeproject.domain.product.product.repository.ProductRepository;
 import com.coffeeproject.global.exception.ServiceException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,9 +23,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -44,6 +46,9 @@ class OrderControllerTest {
 
     @Autowired
     private ObjectMapper objectMapper;
+
+    @Autowired
+    private EntityManager em;
 
     private OrderRequest request;
     private Product product1;
@@ -133,5 +138,33 @@ class OrderControllerTest {
         int invalidId = 9999;
         assertThatThrownBy(() -> orderService.getOrderById(invalidId))
                 .isInstanceOf(ServiceException.class);
+    }
+
+    @Test
+    @DisplayName("주문 삭제 시 연관된 주문 항목도 모두 삭제된다.")
+    void deleteOrder() throws Exception {
+        Order order = orderService.createOrder(request);
+        int orderId = order.getId();
+
+        int itemCountBefore = order.getOrderItems().size();
+        assertThat(itemCountBefore).isGreaterThan(0);
+
+        List<Integer> orderItemIds = order.getOrderItems().stream()
+                .map(OrderItem::getId)
+                .toList();
+
+        mockMvc.perform(delete("/orders/{id}", orderId))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.resultCode").value("200"))
+                .andExpect(jsonPath("$.msg").value(orderId + "번 주문이 삭제되었습니다."));
+
+        em.flush();
+        em.clear();
+
+        // 각 주문 항목이 삭제되었는지 확인
+        for (int itemId : orderItemIds) {
+            OrderItem deletedItem = em.find(OrderItem.class, itemId);
+            assertThat(deletedItem).isNull();
+        }
     }
 }
