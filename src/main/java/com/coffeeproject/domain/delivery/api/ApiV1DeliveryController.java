@@ -4,6 +4,7 @@ import com.coffeeproject.domain.delivery.dto.DeliveryDto;
 import com.coffeeproject.domain.delivery.entity.Delivery;
 import com.coffeeproject.domain.delivery.service.DeliveryService;
 import com.coffeeproject.global.rsData.RsData;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +16,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/delivery")
 @RequiredArgsConstructor
+@Tag(name = "ApiV1DeliveryController", description = "관리자용 API 배송조회 컨트롤러")
 public class ApiV1DeliveryController {
     private final DeliveryService deliveryService;
     @Transactional
