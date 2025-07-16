@@ -8,6 +8,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -30,7 +31,8 @@ public class Delivery extends BaseEntity {
             joinColumns = @JoinColumn(name = "delivery_id"),
             inverseJoinColumns = @JoinColumn(name = "order_id")
     )
-    private List<Order> orders;
+    @Builder.Default
+    private List<Order> orders = new ArrayList<>();
     private int totalPrice;
     @Enumerated(EnumType.STRING)
     private DeliveryStatus status;
