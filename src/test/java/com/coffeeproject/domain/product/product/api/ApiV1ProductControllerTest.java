@@ -1,6 +1,5 @@
 package com.coffeeproject.domain.product.product.api;
 
-import com.coffeeproject.domain.product.product.dto.ProductDto;
 import com.coffeeproject.domain.product.product.entity.Product;
 import com.coffeeproject.domain.product.product.service.ProductService;
 import org.junit.jupiter.api.BeforeEach;
