@@ -85,7 +85,7 @@ public class ApiV1ProductController {
         if (product == null) {
             return new RsData<>("404", "상품을 찾을 수 없습니다.", null);
         }
-        productService.modify(product, reqBody.name(), reqBody.description(), reqBody.price());
+        productService.modifyById(id, product, reqBody.name(), reqBody.description(), reqBody.price());
         return new RsData<>(
                 "200",
                 "상품이 수정되었습니다.",
