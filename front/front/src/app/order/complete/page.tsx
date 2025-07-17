@@ -30,7 +30,7 @@ export default function OrderComplete() {
   return (
     <main className="p-4 max-w-2xl mx-auto">
       <HeaderTitle />
-      <h2 className="text-xl font-bold mb-4">🎉 주문이 완료되었습니다!</h2>
+      <h2 className="text-xl font-bold mb-4">🎉 주문이 완료되었습니다! </h2>
 
       <ul className="border p-4 rounded bg-white shadow space-y-2 text-gray-700">
         <li>
