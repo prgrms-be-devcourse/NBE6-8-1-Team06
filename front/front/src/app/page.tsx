@@ -61,6 +61,7 @@ export default function HomePage() {
 
   return (
     <main className="pt-6 grid place-items-center">
+
       <HeaderTitle />
       <p className="text-gray-600 mb-3">상품을 소개합니다.</p>
 

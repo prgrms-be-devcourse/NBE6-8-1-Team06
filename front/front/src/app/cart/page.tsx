@@ -90,7 +90,9 @@ export default function CartPage() {
               <span className="w-16"></span>
             </li>
           </ul>
-           <div className="flex justify-between mt-6">
+           <div className="text-center mt-5 font-bold  bg-amber-100 py-2 px-10 rounded"> “당일 오후 2시 이후의 주문은 다음날 배송을 시작합니다.”</div>
+
+           <div className="flex justify-between mt-3">
              <button
                onClick={() => router.back()}
                className="bg-amber-700 text-white font-semibold py-2 px-4 rounded hover:bg-amber-800 transition"
@@ -105,6 +107,7 @@ export default function CartPage() {
                주문하기
              </button>
            </div>
+
 
         </>
       )}
