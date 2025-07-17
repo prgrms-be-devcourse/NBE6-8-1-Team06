@@ -70,7 +70,7 @@ export default function OrderPage() {
     }
 
     const payload: OrderRequest = {
-      customerEmail: email,
+        customerEmail: email,
       shippingAddress: address,
       shippingZipCode: zipCode,
       items: cartItems.map(i => ({
@@ -140,9 +140,9 @@ export default function OrderPage() {
       <ul className="text-amber-600 border-b-2 mb-4">
         {cartItems.map((item) => (
           <li key={item.id} className="flex justify-between items-center mb-2 text-black">
-            <span className="flex-1 font-bold">{item.name}</span>
-            <span className="w-33 text-center">{item.quantity}개 × {item.price.toLocaleString()}원</span>
-            <span className="w-25 text-right font-semibold">{(item.price * item.quantity).toLocaleString()}원</span>
+                <span className="flex-1 font-bold">{item.name}</span>
+                <span className="w-33 text-center">{item.quantity}개 × {item.price.toLocaleString()}원</span>
+                <span className="w-25 text-right font-semibold">{(item.price * item.quantity).toLocaleString()}원</span>
           </li>
         ))}
       </ul>
@@ -151,9 +151,9 @@ export default function OrderPage() {
       <div className="text-amber-900 border-b-2 mb-4"></div>
       <h1 className="text-2xl font-bold mb-3 text-amber-900">🎁 배송지 작성</h1>
 
-      <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="이메일" className="w-full border p-2 mb-2 rounded" />
-      <input type="text" value={address} onChange={(e) => setAddress(e.target.value)} placeholder="주소" className="w-full border p-2 mb-2 rounded" />
-      <input type="text" value={zipCode} onChange={(e) => setZipCode(e.target.value)} placeholder="우편번호" className="w-full border p-2 mb-4 rounded" />
+          <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="이메일" className="w-full border p-2 mb-2 rounded" />
+          <input type="text" value={address} onChange={(e) => setAddress(e.target.value)} placeholder="주소" className="w-full border p-2 mb-2 rounded" />
+          <input type="text" value={zipCode} onChange={(e) => setZipCode(e.target.value)} placeholder="우편번호" className="w-full border p-2 mb-4 rounded" />
 
       <button onClick={handleSubmit} disabled={loading} className="w-full bg-amber-700 text-white py-2 rounded hover:bg-amber-800 transition">
         {loading ? '처리중...' : '주문하기'}

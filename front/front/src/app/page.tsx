@@ -52,8 +52,7 @@ export default function HomePage() {
   return (
     <main className="grid place-items-center relative">
       <Link
-        href="/admin"
-        aria-label="관리자 페이지 이동"
+        href="/admin/login"
         className="absolute right-4 top-4 hover:text-amber-700"
       >
         👤
