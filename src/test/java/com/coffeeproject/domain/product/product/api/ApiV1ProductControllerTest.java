@@ -77,7 +77,6 @@ public class ApiV1ProductControllerTest {
     void t2() throws Exception {
 
 
-
         List<Product> products = productService.findAll();
         System.out.println("==============================================================");
         System.out.println(products.size());
@@ -106,7 +105,6 @@ public class ApiV1ProductControllerTest {
                 .andExpect(jsonPath("$.data.length()").value(products.size()));
 
 
-
         for (int i = 0; i < products.size(); i++) {
             Product product = products.get(i);
             resultActions
@@ -121,7 +119,7 @@ public class ApiV1ProductControllerTest {
 
     @Test
     @DisplayName("상품 단건 조회")
-    void t3 ()throws Exception {
+    void t3() throws Exception {
 
 
         Product product = productService.findLatest().get();
@@ -138,6 +136,52 @@ public class ApiV1ProductControllerTest {
                 .andExpect(jsonPath("$.data.description").value(product.getDescription()))
                 .andExpect(jsonPath("$.data.price").value(product.getPrice()));
 
+    }
+
+
+    @Test
+    @DisplayName("상품 삭제")
+    void t4() {
+
+        Product product = productService.findLatest().get();
+
+        try {
+            mockMvc.perform(
+                            MockMvcRequestBuilders.delete("/api/v1/products/" + product.getId())
+                    ).andDo(print())
+                    .andExpect(status().isNoContent());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    @Test
+    @DisplayName("상품 수정")
+    void t5() throws Exception{
+        Product product = productService.findLatest().get();
+
+        ResultActions resultActions = mockMvc.perform(
+                MockMvcRequestBuilders.put("/api/v1/products/" + product.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                  "name": "수정된 커피",
+                                  "description": "수정된 맛있는 커피입니다.",
+                                  "price": 6000
+                                }
+                                """)
+        ).andDo(print());
+
+        String responseBody = resultActions.andReturn().getResponse().getContentAsString();
+        System.out.println(responseBody);
+
+        resultActions
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(print())
+                .andExpect(jsonPath("$.data.name").value("수정된 커피"))
+                .andExpect(jsonPath("$.data.description").value("수정된 맛있는 커피입니다."))
+                .andExpect(jsonPath("$.data.price").value(6000));
     }
 
 }
