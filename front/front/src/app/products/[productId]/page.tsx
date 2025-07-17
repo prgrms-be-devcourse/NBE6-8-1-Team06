@@ -7,7 +7,7 @@ import HeaderTitle from '../../../components/HeaderTitle'
 import CartIcon from '../../../components/CartIcon'
 import { useRouter } from 'next/navigation'
 import { useCart } from '../../../hooks/useCart'
-
+import Image from "next/image"
 
 /*
 
@@ -97,15 +97,36 @@ export default function ProductDetailPage({ params }: { params: Promise<{ produc
           <CartIcon />
         </div>
 
-        <div className="flex gap-6 border p-6 rounded shadow hover:shadow-md transition w-full max-w-2xl">
+        <div className="flex gap-6 border p-6 rounded shadow hover:shadow-md transition w-full max-w-2xl relative">
           <div className="flex-1">
             <h1 className="text-3xl font-bold mb-4">{product.name}</h1>
+            <div className="flex-1">
+              {product.imageUrl ? (
+                <Image
+                  src={product.imageUrl}
+                  alt={product.name}
+                  width={300}
+                  height={300}
+                  className="mb-4 object-contain"
+                />
+              ) : (
+                <Image
+                  src="/cafe_coffee_bag.png"
+                  alt="대체 이미지 "
+                  width={300}
+                  height={300}
+                  className="mb-4 object-contain"
+                />
+              )}
+            </div>
+
             <p className="mb-2 text-gray-700 whitespace-pre-wrap">{product.description}</p>
             <p className="text-xl font-semibold">{product.price}원</p>
           </div>
 
-          <div className="flex flex-col justify-between items-end">
-            <div className="flex items-center gap-2 mb-4">
+          {/* 오른쪽 하단에 고정된 버튼 */}
+          <div className="absolute bottom-6 right-6 flex flex-col items-end gap-2">
+            <div className="flex items-center gap-2">
               <button
                 onClick={() => setQuantity((prev) => Math.max(prev - 1, 1))}
                 className="px-3 py-1 bg-gray-300 rounded"
@@ -124,19 +145,20 @@ export default function ProductDetailPage({ params }: { params: Promise<{ produc
             <button
               className="bg-amber-700 text-white font-semibold py-2 px-4 rounded hover:bg-amber-800 transition"
               onClick={() => {
-                if (!product) return
-                addToCart(product.id, quantity, product.name, product.price)
+                if (!product) return;
+                addToCart(product.id, quantity, product.name, product.price);
                 const confirmed = window.confirm(
                   `${product.name} ${quantity}개가 장바구니에 추가되었습니다!\n장바구니로 이동하시겠습니까?`
-                )
-                if (confirmed) router.push('/cart')
-                else window.location.reload()
+                );
+                if (confirmed) router.push('/cart');
+                else window.location.reload();
               }}
             >
               🛒 장바구니 담기
             </button>
           </div>
         </div>
+
 
         <button
           onClick={() => router.back()}
@@ -146,6 +168,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ produc
         </button>
       </div>
     </main>
+
   )
 }
 

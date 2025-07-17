@@ -21,7 +21,6 @@ export interface ApiResponse<T> {
   data: T
 }
 
-
 export interface Product {
   id: number
   createDate: string
@@ -29,6 +28,7 @@ export interface Product {
   name: string
   description: string
   price: number
+  imageUrl?: string  // url 이미지 선택적 속성으로 받기
 }
 
 export interface CartItem {
@@ -50,5 +50,4 @@ export interface OrderRequest {
     productId: number
     quantity: number
   }[]
-
 }
