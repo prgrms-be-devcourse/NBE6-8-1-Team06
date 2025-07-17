@@ -19,6 +19,7 @@ public class DeliveryService {
                 Delivery.builder()
                         .customerEmail(orderList.getFirst().getCustomerEmail())
                         .shippingAddress(orderList.getFirst().getShippingAddress())
+                        .orders(new ArrayList<>(orderList))
                         .totalPrice(orderList.stream().mapToInt(Order::getTotalPrice).sum())
                         .status(Delivery.DeliveryStatus.PENDING)
                         .build()
