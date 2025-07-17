@@ -23,7 +23,8 @@ public class ApiV1ProductController {
             String name,
             @NotBlank
             String description,
-
+            @NotBlank
+            String imgUrl,
             int price
     ) {
     }
@@ -32,7 +33,7 @@ public class ApiV1ProductController {
     @Transactional
     public RsData<ProductDto> createProduct(@Valid @RequestBody ProductRequestBody reqBody) {
 
-        Product product =productService.write(reqBody.name(), reqBody.description(), reqBody.price());
+        Product product =productService.write(reqBody.name(), reqBody.description(),reqBody.imgUrl, reqBody.price());
 
         return new RsData<>(
                 "201",
@@ -87,7 +88,7 @@ public class ApiV1ProductController {
         if (product == null) {
             return new RsData<>("404", "상품을 찾을 수 없습니다.", null);
         }
-        productService.modifyById(id, product, reqBody.name(), reqBody.description(), reqBody.price());
+        productService.modifyById(id, product, reqBody.name(), reqBody.description(),reqBody.imgUrl(), reqBody.price());
         return new RsData<>(
                 "200",
                 "상품이 수정되었습니다.",

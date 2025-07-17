@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -153,5 +154,73 @@ public class ApiV1DeliveryControllerTest {
         assertThat(updatedDeliveryInDb.getShippingAddress()).isEqualTo(newShippingAddress);
         assertThat(updatedDeliveryInDb.getStatus()).isEqualTo(Delivery.DeliveryStatus.SHIPPED);
     }
-    //TODO : 에러 헨들러 도입 후 예외 케이스에 대한 테스트 작성
+
+    @Test
+    @DisplayName("올바르지 않은 배송 아이디로 조회 요청")
+    void t4() throws Exception {
+        ResultActions resultActions = mvc
+                .perform(get("/api/v1/delivery/" + 999999))
+                .andDo(print());
+
+        resultActions
+                .andExpect(handler().handlerType(ApiV1DeliveryController.class))
+                .andExpect(handler().methodName("deliveryInfoById"))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.resultCode").value("404-1"))
+                .andExpect(jsonPath("$.msg").value("해당 데이터가 존재하지 않습니다."));
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 배송 정보 수정")
+    void t5() throws Exception {
+        String newShippingAddress = "제주도 서귀포시";
+        String newStatus = Delivery.DeliveryStatus.SHIPPED.name();
+
+        ApiV1DeliveryController.DeliveryUpdateRequestBody requestBody =
+                new ApiV1DeliveryController.DeliveryUpdateRequestBody(newShippingAddress, newStatus);
+
+        ResultActions resultActions = mvc
+                .perform(
+                        put("/api/v1/delivery/" + 9999999)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(requestBody))
+                )
+                .andDo(print());
+
+        resultActions
+                .andExpect(handler().handlerType(ApiV1DeliveryController.class))
+                .andExpect(handler().methodName("updateDelivery"))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.resultCode").value("404-1"))
+                .andExpect(jsonPath("$.msg").value("해당 데이터가 존재하지 않습니다."));
+    }
+
+    @Test
+    @DisplayName("올바르지 않은 요청 본문으로 배송 정보 수정")
+    void t6() throws Exception {
+        Delivery existingDelivery = deliveryService.getAllDeliveries().getFirst();
+        int deliveryId = existingDelivery.getId();
+
+        String newShippingAddress = null;
+        String newStatus = null;
+
+        ApiV1DeliveryController.DeliveryUpdateRequestBody requestBody =
+                new ApiV1DeliveryController.DeliveryUpdateRequestBody(newShippingAddress, newStatus);
+
+        ResultActions resultActions = mvc
+                .perform(
+                        put("/api/v1/delivery/" + deliveryId)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(requestBody))
+                )
+                .andDo(print());
+
+        resultActions
+                .andExpect(handler().handlerType(ApiV1DeliveryController.class))
+                .andExpect(handler().methodName("updateDelivery"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.resultCode").value("400-1"))
+                .andExpect(jsonPath("$.msg", containsString("shippingAddress-NotBlank")))
+                .andExpect(jsonPath("$.msg", containsString("status-NotBlank")));
+    }
 }

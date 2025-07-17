@@ -79,6 +79,7 @@ graph TD
 | **상품 세부 정보 조회**    | `GET`      | `/products/{id}`         | 특정 커피 상품의 세부 정보를 조회합니다.   |
 | **상품 정보 수정**    | `PUT`      | `/products/{id}`         | 특정 커피 상품의 정보를 수정합니다.   |
 | **상품 삭제**    | `DELETE`      | `/products/{id}`         | 특정 커피 상품을 삭제합니다.   |
+
 --- 
 | **API 이름**         | **메서드** | **URL**                  | **설명**                    |
 |--------------------|------------|--------------------------|---------------------------|
@@ -103,6 +104,7 @@ graph TD
 | **name**        | String        | 상품명           |
 | **description** | String        | 상품 상세 설명      |
 | **price**       | Int       | 상품 가격         |
+| **img_url**   | String      | 상품 이미지 주소     |
 | **created_at**  | LocalDateTime | 상품 등록일        |
 | **updated_at**  | LocalDateTime | 상품 정보 마지막 수정일 |
 
@@ -158,6 +160,3 @@ graph TD
 | status                | String        | 배송 묶음의 상태 (예: "배송 준비 중", "배송 완료") |
 | **created_at**        | LocalDateTime |                                   |
 | **updated_at**        | LocalDateTime |                                   |
-
-## 5. 파일(이후에 추가 가능)
-

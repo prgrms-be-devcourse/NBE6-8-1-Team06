@@ -16,8 +16,8 @@ import java.util.Optional;
 public class ProductService {
 public final ProductRepository productRepository;
 
-    public Product write(String name,String description,int price) {
-        Product product = new Product(name, description, price);
+    public Product write(String name,String description,String imgUrl ,int price) {
+        Product product = new Product(name, description,imgUrl, price);
         return productRepository.save(product);
     }
 
@@ -39,12 +39,13 @@ public final ProductRepository productRepository;
     }
 
 
-    public void modifyById(int id ,Product product, @NotBlank String name, @NotBlank String description, int price) {
-        Product  tProduct = new Product(name, description, price);
+    public void modifyById(int id ,Product product, @NotBlank String name, @NotBlank String description,@NotBlank String imgUrl, int price) {
+        Product  tProduct = new Product(name, description,imgUrl, price);
         productRepository.findById(id).ifPresent(existingProduct -> {
             existingProduct.setName(tProduct.getName());
             existingProduct.setDescription(tProduct.getDescription());
             existingProduct.setPrice(tProduct.getPrice());
+            existingProduct.setImgUrl(tProduct.getImgUrl());
             productRepository.save(existingProduct);
         });
 

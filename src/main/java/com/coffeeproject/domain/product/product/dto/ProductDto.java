@@ -7,22 +7,17 @@ import lombok.NonNull;
 import java.time.LocalDateTime;
 
 public record ProductDto(
-        @NonNull int productId,
-        @NonNull LocalDateTime created_at,
-        @NonNull LocalDateTime updated_at,
         @NonNull String name,
         @NonNull String description,
-        @NonNull int  price
-
+        @NonNull int  price,
+        @NonNull String imgUrl
 ){ public ProductDto(Product product)
     {
         this (
-                product.getId(),
-                product.getCreateDate(),
-                product.getModifyDate(),
                 product.getName(),
                 product.getDescription(),
-                product.getPrice()
+                product.getPrice(),
+                product.getImgUrl()
         );
     }
 }
