@@ -112,7 +112,7 @@ useEffect(() => {
                 else window.location.reload()
               }}
             >
-              장바구니 담기
+              🛒 장바구니 담기
             </button>
           </div>
         </div>
@@ -121,7 +121,7 @@ useEffect(() => {
           onClick={() => router.back()}
           className="bg-amber-700 text-white font-semibold py-2 px-4 rounded hover:bg-amber-800 transition mt-6"
         >
-          뒤로가기
+          ◀️ ️뒤로가기
         </button>
       </div>
     </main>

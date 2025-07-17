@@ -90,15 +90,22 @@ export default function CartPage() {
               <span className="w-16"></span>
             </li>
           </ul>
+           <div className="flex justify-between mt-6">
+             <button
+               onClick={() => router.back()}
+               className="bg-amber-700 text-white font-semibold py-2 px-4 rounded hover:bg-amber-800 transition"
+             >
+               ◀️ 뒤로가기
+             </button>
 
-          <div className="text-right mt-6">
-            <button
-              className="bg-amber-700 text-white rounded-md px-5 py-2 hover:bg-amber-800 transition"
-              onClick={() => router.push('/order')}
-            >
-              주문하기
-            </button>
-          </div>
+             <button
+               className="bg-amber-700 text-white rounded-md px-5 py-2 hover:bg-amber-800 transition"
+               onClick={() => router.push('/order')}
+             >
+               주문하기
+             </button>
+           </div>
+
         </>
       )}
 

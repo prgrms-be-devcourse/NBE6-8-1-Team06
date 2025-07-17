@@ -3,10 +3,9 @@
 import { useState, useEffect } from 'react'
 import { useCart } from '../../hooks/useCart'
 import { useRouter } from 'next/navigation'
-import { OrderRequest, RsData } from '../../../types/index'
+import { OrderRequest, ApiResponse, Product } from '../../../types/index'
 import { apiFetch } from '../../libs/apiFetch'
-import { Product } from '../../../types'
-import HeaderTitle from "@/components/HeaderTitle";
+import HeaderTitle from '@/components/HeaderTitle'
 
 type CartItemDetailed = Product & { quantity: number }
 
@@ -35,10 +34,12 @@ export default function OrderPage() {
         if (!res.ok) throw new Error('상품 정보를 불러오는 데 실패했습니다.')
         return res.json()
       })
-      .then((allProducts: Product[]) => {
+      .then((resJson: ApiResponse<Product[]>) => {
+        const allProducts = resJson.data
+
         const detailed = items
-          .map(({ productId, quantity }) => {
-            const product = allProducts.find((p) => p.id === productId)
+          .map(({ id, quantity }) => {
+            const product = allProducts.find((p) => p.id === id)
             if (!product) return null
             return { ...product, quantity }
           })
@@ -65,31 +66,34 @@ export default function OrderPage() {
     }
 
     const confirmed = window.confirm('결제하시겠습니까?')
-    if (!confirmed) {
-      alert('결제가 취소되었습니다.')
-      router.push('/')  // 취소 시 홈으로 이동
-      return
-    }
+    const status = confirmed ? 'PAID' : 'CANCELED'
 
     const payload: OrderRequest = {
-      customerName: '주문자명',
       customerEmail: email,
-      address,
-      postalCode: zipCode,
-      totalPrice: total,
-      status: '결제 완료',
-      orderItems: cartItems.map(i => ({ productId: i.id, quantity: i.quantity })),
+      shippingAddress: address,
+      shippingZipCode: zipCode,
+      items: cartItems.map(i => ({ productId: i.id, quantity: i.quantity })),
+      status,
     }
 
     try {
       setLoading(true)
-      const res = await apiFetch<RsData<{ id: number }>>('http://localhost:8080/api/v1/orders', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-      })
+      const res = await apiFetch<ApiResponse<{ orderId: number }>>(
+        'http://localhost:8080/api/v1/orders',
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        }
+      )
       clearCart()
-      router.push(`/order/complete?orderId=${res.data.id}&email=${encodeURIComponent(email)}&address=${encodeURIComponent(address)}&zipCode=${encodeURIComponent(zipCode)}&total=${total}`)
+
+      if (confirmed) {
+        router.push(`/order/complete?orderId=${res.data.orderId}`)
+      } else {
+        alert('결제가 취소되었습니다.')
+        router.push('/') // 취소 후 홈으로 이동
+      }
     } catch (e) {
       alert('주문 실패')
     } finally {
@@ -99,18 +103,16 @@ export default function OrderPage() {
 
   if (loading) return <p>로딩 중...</p>
   if (error) return <p className="text-red-600">에러: {error}</p>
-  if (cartItems.length === 0) return (
-    <main className="p-4 max-w-2xl mx-auto text-center">
-      <HeaderTitle />
-      <p>장바구니가 비어있습니다.</p>
-      <button
-        className="mt-4 bg-amber-700 text-white py-2 px-4 rounded"
-        onClick={() => router.push('/')}
-      >
-        상품 목록으로 돌아가기
-      </button>
-    </main>
-  )
+  if (cartItems.length === 0)
+    return (
+      <main className="p-4 max-w-2xl mx-auto text-center">
+        <HeaderTitle />
+        <p>장바구니가 비어있습니다.</p>
+        <button className="mt-4 bg-amber-700 text-white py-2 px-4 rounded" onClick={() => router.push('/')}>
+          상품 목록으로 돌아가기
+        </button>
+      </main>
+    )
 
   return (
     <main className="p-4 max-w-2xl mx-auto">
@@ -119,19 +121,17 @@ export default function OrderPage() {
 
       <ul className="text-amber-600 border-b-2 mb-4">
         {cartItems.map((item) => (
-          <li key={item.id} className="flex justify-between mb-2 text-black">
-            <span className="font-bold ">{item.name}</span>
-            <span>
-              {item.quantity}개 × {item.price.toLocaleString()}원
-            </span>
-            <span className=" ">{(item.price * item.quantity).toLocaleString()}원</span>
+          <li key={item.id} className="flex justify-between items-center mb-2 text-black">
+            <span className="flex-1 font-bold">{item.name}</span>
+            <span className="w-33 text-center">{item.quantity}개 × {item.price.toLocaleString()}원</span>
+            <span className="w-25 text-right font-semibold">{(item.price * item.quantity).toLocaleString()}원</span>
           </li>
         ))}
       </ul>
 
-      <div className="text-right font-bold mt-4 mb-2 ">총 결제 금액: {total.toLocaleString()}원</div>
+      <div className="text-right font-bold mt-4 mb-2">총 결제 금액: {total.toLocaleString()}원</div>
       <div className="text-amber-900 border-b-2 mb-4"></div>
-      <h1 className="text-2xl font-bold mb-3 text-amber-900 ">🎁 배송지 작성</h1>
+      <h1 className="text-2xl font-bold mb-3 text-amber-900">🎁 배송지 작성</h1>
 
       <input
         type="email"
@@ -162,6 +162,22 @@ export default function OrderPage() {
       >
         {loading ? '처리중...' : '주문하기'}
       </button>
+
+      <div className="flex justify-between mt-6">
+        <button
+          onClick={() => router.back()}
+          className="bg-gray-300 text-gray-800 font-semibold py-2 px-4 rounded hover:bg-gray-400 transition"
+        >
+          ◀️ 뒤로가기
+        </button>
+
+        <button
+          className="bg-gray-300 text-gray-800 font-semibold rounded-md px-5 py-2 hover:bg-gray-400 transition"
+          onClick={() => router.push('/')}
+        >
+          🏠 홈으로 돌아가기
+        </button>
+      </div>
     </main>
   )
 }

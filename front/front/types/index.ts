@@ -1,3 +1,24 @@
+export interface OrderItem {
+  productId: number
+  productName: string
+  quantity: number
+}
+
+export interface OrderData {
+  orderId: number
+  customerEmail: string
+  shippingAddress: string
+  shippingZipCode: string
+  totalPrice: number
+  items: OrderItem[]
+}
+
+export interface ApiResponse<T> {
+  resultCode: string
+  msg: string
+  data: T
+}
+
 export interface Product {
   id: number
   createDate: string
@@ -12,35 +33,15 @@ export interface CartItem {
   quantity: number
 }
 
-export type CartItemDetailed = Product & { quantity: number }
-
-export interface OrderItem {
-  id: number
-  quantity: number
-}
-
 export interface OrderRequest {
-  customerName: string
-  customerEmail: string
-  address: string
-  postalCode: string
-  orderItems: OrderItem[]
-  totalPrice: number
-  status: string
+  customerEmail: string;
+  shippingAddress: string;
+  shippingZipCode: string;
+
+  items: {
+    productId: number;
+    quantity: number;
+  }[];
+  status : 'PAID' | 'CANCELED';
 }
 
-export type Order = {
-  id: number
-  customerEmail: string
-  Address: string
-  ZipCode: string
-  totalAmount: number
-  status: string
-  createDate: string
-}
-
-export interface RsData<T> {
-  resultCode: string
-  msg: string
-  data: T
-}
