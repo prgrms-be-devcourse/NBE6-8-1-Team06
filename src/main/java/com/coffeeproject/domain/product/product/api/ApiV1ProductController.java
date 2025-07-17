@@ -63,4 +63,34 @@ public class ApiV1ProductController {
         }
     }
 
+    @DeleteMapping({"/{id}"})
+    @Transactional
+    public RsData<ProductDto> deleteProductById(@PathVariable(value = "id") int id)
+    {
+        Product product = productService.findById(id).orElse(null);
+        if (product == null) {return new RsData<>("404", "상품이 존재화지  않습니다.", null);}
+        else {
+            productService.deleteById(id);
+            return new RsData<>("204", "상품이 삭제되었습니다.", null);
+        }
+    }
+
+    @PutMapping("/{id}")
+    @Transactional
+    public RsData<ProductDto> updateProduct(
+            @PathVariable(value = "id") int id,
+            @RequestBody ProductRequestBody reqBody
+    ) {
+        Product product = productService.findById(id).orElse(null);
+        if (product == null) {
+            return new RsData<>("404", "상품을 찾을 수 없습니다.", null);
+        }
+        productService.modifyById(id, product, reqBody.name(), reqBody.description(), reqBody.price());
+        return new RsData<>(
+                "200",
+                "상품이 수정되었습니다.",
+                new ProductDto(product)
+        );
+    }
+
 }
