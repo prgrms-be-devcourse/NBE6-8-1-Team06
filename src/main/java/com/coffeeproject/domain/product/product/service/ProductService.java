@@ -4,6 +4,7 @@ package com.coffeeproject.domain.product.product.service;
 import com.coffeeproject.domain.product.product.entity.Product;
 import com.coffeeproject.domain.product.product.repository.ProductRepository;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -33,9 +34,19 @@ public final ProductRepository productRepository;
 
 
     public Optional<Product> findLatest() {
+
         return productRepository.findFirstByOrderByIdDesc();
     }
 
 
+    public void modify(Product product, @NotBlank String name, @NotBlank String description, int price) {
+        Product  tProduct = new Product(name, description, price);
+        productRepository.save(tProduct);
+    }
+
+    public void deleteById(int id) {
+        productRepository.deleteById(id);
+
+    }
 
 }
