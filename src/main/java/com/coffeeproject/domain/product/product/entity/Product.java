@@ -14,12 +14,14 @@ public class Product extends BaseEntity {
     private String name;
     private String description;
     private int price;
+    private String imgUrl;
     public Product() {
     }
-    public Product(@NotBlank String name, @NotBlank String description, @NotBlank int price) {
+    public Product(@NotBlank String name, @NotBlank String description,@NotBlank String imgUrl, @NotBlank int price) {
         this.name = name;
         this.description = description;
         this.price = price;
+        this.imgUrl = imgUrl;
     }
 
 }

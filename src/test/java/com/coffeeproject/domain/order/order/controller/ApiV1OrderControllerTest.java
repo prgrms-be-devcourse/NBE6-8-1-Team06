@@ -60,8 +60,8 @@ class ApiV1OrderControllerTest {
 
     @BeforeEach
     void setUp() {
-        product1 = productRepository.save(new Product("아메리카노", "커피1", 3000));
-        product2 = productRepository.save(new Product("에스프레소", "커피2", 5000));
+        product1 = productRepository.save(new Product("아메리카노", "커피1","tmpUrl1", 3000));
+        product2 = productRepository.save(new Product("에스프레소", "커피2","tmpUrl2", 5000));
 
         request = new OrderCreateRequest(
                 "test@example.com",

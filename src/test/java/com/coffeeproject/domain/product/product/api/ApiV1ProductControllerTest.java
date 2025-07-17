@@ -36,10 +36,10 @@ public class ApiV1ProductControllerTest {
     @BeforeEach
     void setUp() {
         // 테스트를 위한 초기 상품 데이터 삭제
-        productService.write("커피", "쓴 커피", 10000);
-        productService.write("차", "달콤한 차", 8000);
-        productService.write("케이크", "달콤한 케이크", 12000);
-        productService.write("쿠키", "바삭한 쿠키", 5000);
+        productService.write("커피", "쓴 커피","TmpImgUrl1",10000);
+        productService.write("차", "달콤한 차","TmpImgUrl2", 8000);
+        productService.write("케이크", "달콤한 케이크","TmpImgUrl3", 12000);
+        productService.write("쿠키", "바삭한 쿠키","TmpImgUrl4", 5000);
 
     }
 
@@ -54,6 +54,7 @@ public class ApiV1ProductControllerTest {
                                 {
                                   "name": "커피",
                                   "description": "맛있는 커피입니다.",
+                                  "imgUrl": "TestImgUrl",
                                   "price": 5000
                                 }
                                 """)
@@ -67,7 +68,8 @@ public class ApiV1ProductControllerTest {
                 .andDo(print())
                 .andExpect(jsonPath("$.data.name").value("커피"))
                 .andExpect(jsonPath("$.data.description").value("맛있는 커피입니다."))
-                .andExpect(jsonPath("$.data.price").value(5000));
+                .andExpect(jsonPath("$.data.price").value(5000))
+                .andExpect(jsonPath("$.data.imgUrl").value("TestImgUrl"));
 
     }
 
@@ -85,6 +87,7 @@ public class ApiV1ProductControllerTest {
             System.out.println("상품 이름: " + product.getName());
             System.out.println("상품 설명: " + product.getDescription());
             System.out.println("상품 가격: " + product.getPrice());
+            System.out.println("상품 이미지 주소: " + product.getImgUrl());
             System.out.println("==============================================================");
         }
         System.out.println("==============================================================");
@@ -111,7 +114,8 @@ public class ApiV1ProductControllerTest {
                     .andExpect(jsonPath("$.data.[%d].id".formatted(i)).value(product.getId()))
                     .andExpect(jsonPath("$.data.[%d].name".formatted(i)).value(product.getName()))
                     .andExpect(jsonPath("$.data.[%d].description".formatted(i)).value(product.getDescription()))
-                    .andExpect(jsonPath("$.data.[%d].price".formatted(i)).value(product.getPrice()));
+                    .andExpect(jsonPath("$.data.[%d].price".formatted(i)).value(product.getPrice()))
+                    .andExpect(jsonPath("$.data.[%d].imgUrl".formatted(i)).value(product.getImgUrl()));
         }
 
 
@@ -134,7 +138,8 @@ public class ApiV1ProductControllerTest {
                 .andExpect(jsonPath("$.data.id").value(product.getId()))
                 .andExpect(jsonPath("$.data.name").value(product.getName()))
                 .andExpect(jsonPath("$.data.description").value(product.getDescription()))
-                .andExpect(jsonPath("$.data.price").value(product.getPrice()));
+                .andExpect(jsonPath("$.data.price").value(product.getPrice()))
+                .andExpect(jsonPath("$.data.imgUrl").value(product.getImgUrl()));
 
     }
 
@@ -168,6 +173,7 @@ public class ApiV1ProductControllerTest {
                                 {
                                   "name": "수정된 커피",
                                   "description": "수정된 맛있는 커피입니다.",
+                                  "imgUrl": "imaegeUrl",
                                   "price": 6000
                                 }
                                 """)
@@ -181,7 +187,8 @@ public class ApiV1ProductControllerTest {
                 .andDo(print())
                 .andExpect(jsonPath("$.data.name").value("수정된 커피"))
                 .andExpect(jsonPath("$.data.description").value("수정된 맛있는 커피입니다."))
-                .andExpect(jsonPath("$.data.price").value(6000));
+                .andExpect(jsonPath("$.data.price").value(6000))
+                .andExpect(jsonPath("$.data.imgUrl").value(product.getImgUrl()));
     }
 
 }
