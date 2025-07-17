@@ -1,6 +1,7 @@
 package com.coffeeproject.domain.order.order.service;
 
 import com.coffeeproject.domain.order.order.entity.Order;
+import com.coffeeproject.domain.order.order.enums.OrderStatus;
 import com.coffeeproject.domain.order.order.repository.OrderRepository;
 import com.coffeeproject.domain.order.order.service.dto.OrderCreateServiceRequest;
 import com.coffeeproject.domain.order.order.service.dto.OrderUpdateServiceRequest;
@@ -66,6 +67,20 @@ public class OrderService {
         order.calculateTotalAmount();
 
         return order;
+    }
+
+    @Transactional
+    public Order completePayment(int orderId) {
+        Order order = findOrderById(orderId);
+        order.paid();
+        return orderRepository.save(order);
+    }
+
+    @Transactional
+    public Order cancelPayment(int orderId) {
+        Order order = findOrderById(orderId);
+        order.cancel();
+        return orderRepository.save(order);
     }
 
     private void addOrderItems(Order order, List<OrderCreateServiceRequest.OrderItemServiceRequest> itemRequests) {

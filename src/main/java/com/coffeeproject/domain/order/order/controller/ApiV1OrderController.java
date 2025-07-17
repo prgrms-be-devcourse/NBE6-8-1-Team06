@@ -67,4 +67,22 @@ public class ApiV1OrderController {
                 new OrderResponse(order)
         );
     }
+
+    @PostMapping("/{id}/payment/complete")
+    public RsData<OrderResponse> completePayment(@PathVariable(value = "id") int id) {
+        Order order = orderService.completePayment(id);
+        return new RsData<>("200",
+                "결제가 완료되었습니다.",
+                new OrderResponse(order)
+        );
+    }
+
+    @PostMapping("/{id}/payment/cancel")
+    public RsData<OrderResponse> cancelPayment(@PathVariable(value = "id") int id) {
+        Order order = orderService.cancelPayment(id);
+        return new RsData<>("200",
+                "결제가 취소되었습니다.",
+                new OrderResponse(order)
+        );
+    }
 }
