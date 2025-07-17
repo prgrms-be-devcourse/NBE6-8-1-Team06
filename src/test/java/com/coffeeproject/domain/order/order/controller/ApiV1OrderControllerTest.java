@@ -235,4 +235,32 @@ class ApiV1OrderControllerTest {
                 .andExpect(jsonPath("$.resultCode").value("400-1"))
                 .andExpect(jsonPath("$.msg").value(containsString("필수입니다.")));
     }
+
+    @Test
+    @DisplayName("결제 완료 성공")
+    void completePayment() throws Exception {
+        Order order = orderService.createOrder(request.toServiceRequest());
+        em.flush();
+        em.clear();
+
+        mockMvc.perform(post("/api/v1/orders/{id}/payment/complete", order.getId())
+                        .contentType(String.valueOf(MediaType.APPLICATION_JSON)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.resultCode").value("200"))
+                .andExpect(jsonPath("$.msg").value("결제가 완료되었습니다."))
+                .andExpect(jsonPath("$.data.status").value("PAID"));
+    }
+
+    @Test
+    @DisplayName("결제 취소 성공")
+    void cancelPayment() throws Exception {
+        Order order = orderService.createOrder(request.toServiceRequest());
+
+        mockMvc.perform(post("/api/v1/orders/{id}/payment/cancel", order.getId())
+                        .contentType(String.valueOf(MediaType.APPLICATION_JSON)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.resultCode").value("200"))
+                .andExpect(jsonPath("$.msg").value("결제가 취소되었습니다."))
+                .andExpect(jsonPath("$.data.status").value("CANCELED"));
+    }
 }
