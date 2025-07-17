@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
@@ -30,7 +31,7 @@ public class DeliveryService {
     }
     public Delivery getDeliveryById(int id) {
         return deliveryRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Delivery not found with id: " + id));
+                .orElseThrow(() -> new NoSuchElementException("Delivery not found with id: " + id));
     }
     public List<Delivery> getDeliveryByEmail(String email) {
         return deliveryRepository.findByCustomerEmail(email);
