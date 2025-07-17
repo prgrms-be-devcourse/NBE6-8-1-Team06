@@ -11,7 +11,10 @@ import lombok.NoArgsConstructor;
 import java.util.ArrayList;
 import java.util.List;
 
-
+/**
+ * Delivery 엔티티는 주문자의 이메일과 주소가 동일한 List<Order>를 하나로 묶기위한 엔티티 입니다.
+ * 따라서 생성시점에도 필터링을 거쳐 올바른 List<Order>를 전달하여야합니다.
+ */
 @Entity
 @Getter
 @Builder
@@ -31,8 +34,7 @@ public class Delivery extends BaseEntity {
             joinColumns = @JoinColumn(name = "delivery_id"),
             inverseJoinColumns = @JoinColumn(name = "order_id")
     )
-    @Builder.Default
-    private List<Order> orders = new ArrayList<>();
+    private List<Order> orders;
     private int totalPrice;
     @Enumerated(EnumType.STRING)
     private DeliveryStatus status;
