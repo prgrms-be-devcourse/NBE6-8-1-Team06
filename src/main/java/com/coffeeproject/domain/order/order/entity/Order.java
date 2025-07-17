@@ -38,7 +38,7 @@ public class Order extends BaseEntity {
         this.customerEmail = customerEmail;
         this.shippingAddress = shippingAddress;
         this.shippingZipCode = shippingZipCode;
-        this.status = OrderStatus.PAID;
+        this.status = OrderStatus.PENDING;
     }
 
     public static Order createOrder(String customerEmail, String shippingAddress, String shippingZipCode) {
