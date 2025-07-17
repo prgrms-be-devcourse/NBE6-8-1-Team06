@@ -4,6 +4,7 @@ import com.coffeeproject.domain.product.product.dto.ProductDto;
 import com.coffeeproject.domain.product.product.entity.Product;
 import com.coffeeproject.domain.product.product.service.ProductService;
 import com.coffeeproject.global.rsData.RsData;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,9 +30,10 @@ public class ApiV1ProductController {
 
     @PostMapping
     @Transactional
-    public RsData<ProductDto> createProduct(@RequestBody ProductRequestBody reqBody) {
+    public RsData<ProductDto> createProduct(@Valid @RequestBody ProductRequestBody reqBody) {
 
         Product product =productService.write(reqBody.name(), reqBody.description(), reqBody.price());
+
         return new RsData<>(
                 "201",
                 "상품이 등록되었습니다.",
@@ -65,7 +67,7 @@ public class ApiV1ProductController {
 
     @DeleteMapping({"/{id}"})
     @Transactional
-    public RsData<ProductDto> deleteProductById(@PathVariable(value = "id") int id)
+    public RsData<Product> deleteProductById(@PathVariable(value = "id") int id)
     {
         Product product = productService.findById(id).orElse(null);
         if (product == null) {return new RsData<>("404", "상품이 존재화지  않습니다.", null);}
