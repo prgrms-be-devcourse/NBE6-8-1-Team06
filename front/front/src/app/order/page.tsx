@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useCart } from '../../hooks/useCart'
 import { useRouter } from 'next/navigation'
-import { OrderRequest, ApiResponse, Product } from '../../../types/index'
+import { OrderRequest, ApiResponse, Product, Order } from '../../../types/index'
 import { apiFetch } from '../../libs/apiFetch'
 import HeaderTitle from '@/components/HeaderTitle'
 
@@ -36,7 +36,6 @@ export default function OrderPage() {
       })
       .then((resJson: ApiResponse<Product[]>) => {
         const allProducts = resJson.data
-
         const detailed = items
           .map(({ id, quantity }) => {
             const product = allProducts.find((p) => p.id === id)
@@ -65,20 +64,25 @@ export default function OrderPage() {
       return
     }
 
-    const confirmed = window.confirm('결제하시겠습니까?')
-    const status = confirmed ? 'PAID' : 'CANCELED'
+    if (cartItems.length === 0) {
+      alert('장바구니에 상품이 없습니다.')
+      return
+    }
 
     const payload: OrderRequest = {
       customerEmail: email,
       shippingAddress: address,
       shippingZipCode: zipCode,
-      items: cartItems.map(i => ({ productId: i.id, quantity: i.quantity })),
-      status,
+      items: cartItems.map(i => ({
+        productId: i.id,
+        quantity: i.quantity,
+      })),
     }
 
     try {
       setLoading(true)
-      const res = await apiFetch<ApiResponse<{ orderId: number }>>(
+
+      const res = await apiFetch<ApiResponse<Order>>(
         'http://localhost:8080/api/v1/orders',
         {
           method: 'POST',
@@ -86,16 +90,32 @@ export default function OrderPage() {
           body: JSON.stringify(payload),
         }
       )
+
+      const orderId = res.data.orderId
+
+      const confirmed = window.confirm('결제를 진행하시겠습니까?')
+
+      const paymentEndpoint = confirmed
+        ? `/api/v1/orders/${orderId}/payment/complete`
+        : `/api/v1/orders/${orderId}/payment/cancel`
+
+      await apiFetch(`http://localhost:8080${paymentEndpoint}`, {
+        method: 'PUT',
+      })
+
       clearCart()
+      setEmail('')
+      setAddress('')
+      setZipCode('')
 
       if (confirmed) {
-        router.push(`/order/complete?orderId=${res.data.orderId}`)
+        router.push(`/order/complete?orderId=${orderId}`)
       } else {
         alert('결제가 취소되었습니다.')
-        router.push('/') // 취소 후 홈으로 이동
+        router.push('/')
       }
-    } catch (e) {
-      alert('주문 실패')
+    } catch (e: any) {
+      alert(e?.message || '주문 처리 중 오류가 발생했습니다.')
     } finally {
       setLoading(false)
     }
@@ -108,9 +128,7 @@ export default function OrderPage() {
       <main className="p-4 max-w-2xl mx-auto text-center">
         <HeaderTitle />
         <p>장바구니가 비어있습니다.</p>
-        <button className="mt-4 bg-amber-700 text-white py-2 px-4 rounded" onClick={() => router.push('/')}>
-          상품 목록으로 돌아가기
-        </button>
+        <button className="mt-4 bg-amber-700 text-white py-2 px-4 rounded" onClick={() => router.push('/')}>상품 목록으로 돌아가기</button>
       </main>
     )
 
@@ -133,48 +151,19 @@ export default function OrderPage() {
       <div className="text-amber-900 border-b-2 mb-4"></div>
       <h1 className="text-2xl font-bold mb-3 text-amber-900">🎁 배송지 작성</h1>
 
-      <input
-        type="email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        placeholder="이메일"
-        className="w-full border p-2 mb-2 rounded"
-      />
-      <input
-        type="text"
-        value={address}
-        onChange={(e) => setAddress(e.target.value)}
-        placeholder="주소"
-        className="w-full border p-2 mb-2 rounded"
-      />
-      <input
-        type="text"
-        value={zipCode}
-        onChange={(e) => setZipCode(e.target.value)}
-        placeholder="우편번호"
-        className="w-full border p-2 mb-4 rounded"
-      />
+      <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="이메일" className="w-full border p-2 mb-2 rounded" />
+      <input type="text" value={address} onChange={(e) => setAddress(e.target.value)} placeholder="주소" className="w-full border p-2 mb-2 rounded" />
+      <input type="text" value={zipCode} onChange={(e) => setZipCode(e.target.value)} placeholder="우편번호" className="w-full border p-2 mb-4 rounded" />
 
-      <button
-        onClick={handleSubmit}
-        disabled={loading}
-        className="w-full bg-amber-700 text-white py-2 rounded hover:bg-amber-800 transition"
-      >
+      <button onClick={handleSubmit} disabled={loading} className="w-full bg-amber-700 text-white py-2 rounded hover:bg-amber-800 transition">
         {loading ? '처리중...' : '주문하기'}
       </button>
 
       <div className="flex justify-between mt-6">
-        <button
-          onClick={() => router.back()}
-          className="bg-gray-300 text-gray-800 font-semibold py-2 px-4 rounded hover:bg-gray-400 transition"
-        >
+        <button onClick={() => router.back()} className="bg-gray-300 text-gray-800 font-semibold py-2 px-4 rounded hover:bg-gray-400 transition">
           ◀️ 뒤로가기
         </button>
-
-        <button
-          className="bg-gray-300 text-gray-800 font-semibold rounded-md px-5 py-2 hover:bg-gray-400 transition"
-          onClick={() => router.push('/')}
-        >
+        <button onClick={() => router.push('/')} className="bg-gray-300 text-gray-800 font-semibold px-5 py-2 rounded hover:bg-gray-400 transition">
           🏠 홈으로 돌아가기
         </button>
       </div>

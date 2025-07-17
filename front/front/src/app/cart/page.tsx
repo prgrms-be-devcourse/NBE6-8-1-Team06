@@ -11,16 +11,15 @@ export default function CartPage() {
 
   const total = items.reduce((acc, item) => acc + item.price * item.quantity, 0)
 
- const decreaseQuantity = (id: number, quantity: number) => {
-  if (quantity > 1) {
-     updateQuantity(id, quantity - 1)
-   }
- }
+  const decreaseQuantity = (id: number, quantity: number) => {
+    if (quantity > 1) {
+      updateQuantity(id, quantity - 1)
+    }
+  }
 
- const increaseQuantity = (id: number, quantity: number) => {
-   updateQuantity(id, quantity + 1)
- }
-
+  const increaseQuantity = (id: number, quantity: number) => {
+    updateQuantity(id, quantity + 1)
+  }
 
   const removeItem = (id: number) => {
     removeFromCart(id)
@@ -58,13 +57,15 @@ export default function CartPage() {
                 <span className="w-32 text-center">
                   <button
                     onClick={() => decreaseQuantity(item.id, item.quantity)}
-                    className="bg-amber-700 text-white rounded-lg px-3 py-1 mx-2 hover:bg-amber-800 transition">
+                    className="bg-amber-700 text-white rounded-lg px-3 py-1 mx-2 hover:bg-amber-800 transition"
+                  >
                     -
                   </button>
                   <span className="inline-block w-8 text-center">{item.quantity}</span>
                   <button
                     onClick={() => increaseQuantity(item.id, item.quantity)}
-                    className="bg-amber-700 text-white rounded-lg px-3 py-1 mx-2 hover:bg-amber-800 transition">
+                    className="bg-amber-700 text-white rounded-lg px-3 py-1 mx-2 hover:bg-amber-800 transition"
+                  >
                     +
                   </button>
                 </span>
@@ -76,7 +77,8 @@ export default function CartPage() {
                 <span className="w-16 text-center">
                   <button
                     onClick={() => removeItem(item.id)}
-                    className="text-red-600 hover:text-red-800 font-bold" >
+                    className="text-red-600 hover:text-red-800 font-bold"
+                  >
                     ×
                   </button>
                 </span>
@@ -90,28 +92,28 @@ export default function CartPage() {
               <span className="w-16"></span>
             </li>
           </ul>
-           <div className="text-center mt-5 font-bold  bg-amber-100 py-2 px-10 rounded"> “당일 오후 2시 이후의 주문은 다음날 배송을 시작합니다.”</div>
 
-           <div className="flex justify-between mt-3">
-             <button
-               onClick={() => router.back()}
-               className="bg-amber-700 text-white font-semibold py-2 px-4 rounded hover:bg-amber-800 transition"
-             >
-               ◀️ 뒤로가기
-             </button>
+          <div className="text-center mt-5 font-bold bg-amber-100 py-2 px-10 rounded">
+            “당일 오후 2시 이후의 주문은 다음날 배송을 시작합니다.”
+          </div>
 
-             <button
-               className="bg-amber-700 text-white rounded-md px-5 py-2 hover:bg-amber-800 transition"
-               onClick={() => router.push('/order')}
-             >
-               주문하기
-             </button>
-           </div>
+          <div className="flex justify-between mt-3">
+            <button
+              onClick={() => router.back()}
+              className="bg-amber-700 text-white font-semibold py-2 px-4 rounded hover:bg-amber-800 transition"
+            >
+              ◀️ 뒤로가기
+            </button>
 
-
+            <button
+              className="bg-amber-700 text-white rounded-md px-5 py-2 hover:bg-amber-800 transition"
+              onClick={() => router.push('/order')}
+            >
+              주문하기
+            </button>
+          </div>
         </>
       )}
-
 
       <div className="mt-8 text-center">
         <button

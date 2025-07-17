@@ -13,11 +13,14 @@ export interface OrderData {
   items: OrderItem[]
 }
 
+export type Order = OrderData
+
 export interface ApiResponse<T> {
   resultCode: string
   msg: string
   data: T
 }
+
 
 export interface Product {
   id: number
@@ -33,15 +36,19 @@ export interface CartItem {
   quantity: number
 }
 
-export interface OrderRequest {
-  customerEmail: string;
-  shippingAddress: string;
-  shippingZipCode: string;
-
-  items: {
-    productId: number;
-    quantity: number;
-  }[];
-  status : 'PAID' | 'CANCELED';
+export interface OrderResponse {
+  resultCode: string
+  msg: string
+  data: Order
 }
 
+export interface OrderRequest {
+  customerEmail: string
+  shippingAddress: string
+  shippingZipCode: string
+  items: {
+    productId: number
+    quantity: number
+  }[]
+
+}
