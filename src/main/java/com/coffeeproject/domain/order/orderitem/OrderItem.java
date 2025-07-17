@@ -46,4 +46,10 @@ public class OrderItem extends BaseEntity {
     public static OrderItem createOrderItem(Product product, Order order, Integer quantity) {
         return new OrderItem(product, order, quantity);
     }
+
+    public void updateQuantity(int quantity) {
+        this.quantity = quantity;
+        this.subtotalAmount = this.pricePerItem * quantity;
+
+    }
 }
