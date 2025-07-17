@@ -17,7 +17,7 @@ public class ApiV1DeliverySchedulerController {
      * Cron표현식을 인자로 받아 해당 주기마다 배치 작업을 수행합니다. 기본값은 "0 0 14 * * ?" 으로 매일 오후2 시입니다.
      */
     @GetMapping("/start")
-    public String startDeliveryScheduler(@RequestParam(defaultValue = "0 0 14 * * ?") String cronExpression) {
+    public String startDeliveryScheduler(@RequestParam(value = "cronExpression", defaultValue = "0 0 14 * * ?") String cronExpression) {
         return schedulerControlService.startScheduler(cronExpression);
     }
 
