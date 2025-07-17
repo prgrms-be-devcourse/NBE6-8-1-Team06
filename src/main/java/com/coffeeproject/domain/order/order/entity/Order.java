@@ -2,6 +2,7 @@ package com.coffeeproject.domain.order.order.entity;
 
 import com.coffeeproject.domain.order.order.enums.OrderStatus;
 import com.coffeeproject.domain.order.orderitem.OrderItem;
+import com.coffeeproject.global.exception.ServiceException;
 import com.coffeeproject.global.jpa.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -38,7 +39,7 @@ public class Order extends BaseEntity {
         this.customerEmail = customerEmail;
         this.shippingAddress = shippingAddress;
         this.shippingZipCode = shippingZipCode;
-        this.status = OrderStatus.PAID;
+        this.status = OrderStatus.PENDING;
     }
 
     public static Order createOrder(String customerEmail, String shippingAddress, String shippingZipCode) {
@@ -63,5 +64,16 @@ public class Order extends BaseEntity {
 
     public void updateStatus(OrderStatus status) {
         this.status = status;
+    }
+
+    public void paid() {
+        if (this.status != OrderStatus.PENDING) {
+            throw new ServiceException("400", "결제 대기 상태에서만 결제 완료 처리가 가능합니다. 현재 상태: " + status);
+        }
+        this.status = OrderStatus.PAID;
+    }
+
+    public void cancel() {
+        this.status = OrderStatus.CANCELED;
     }
 }
