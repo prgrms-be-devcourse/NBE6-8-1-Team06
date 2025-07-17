@@ -66,8 +66,8 @@ public class ApiV1DeliveryControllerTest {
                 .totalPrice(20000)
                 .build();
 
-        deliveryService.createDelivery(Arrays.asList(order1)); //
-        deliveryService.createDelivery(Arrays.asList(order2, order3)); //
+        deliveryService.createDelivery(Arrays.asList(order1)); 
+        deliveryService.createDelivery(Arrays.asList(order2, order3)); 
     }
 
     @Test
@@ -77,7 +77,7 @@ public class ApiV1DeliveryControllerTest {
                 .perform(get("/api/v1/delivery"))
                 .andDo(print());
 
-        List<Delivery> allDeliveries = deliveryService.getAllDeliveries(); //
+        List<Delivery> allDeliveries = deliveryService.getAllDeliveries(); 
 
         resultActions
                 .andExpect(handler().handlerType(ApiV1DeliveryController.class))
@@ -102,7 +102,7 @@ public class ApiV1DeliveryControllerTest {
     @DisplayName("배송 정보 단건 조회")
     void t2() throws Exception {
         Delivery existingDelivery = deliveryService.getAllDeliveries().getFirst();
-        int deliveryId = existingDelivery.getId(); //
+        int deliveryId = existingDelivery.getId(); 
 
         ResultActions resultActions = mvc
                 .perform(get("/api/v1/delivery/" + deliveryId))
