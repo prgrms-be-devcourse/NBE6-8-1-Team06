@@ -52,74 +52,84 @@ export default function OrderPage() {
 
   const total = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0)
 
-  const handleSubmit = async () => {
-    if (!email.trim() || !address.trim() || !zipCode.trim()) {
-      alert('모든 정보를 입력하세요.')
-      return
-    }
+ const handleSubmit = async () => {
+   if (!email.trim() || !address.trim() || !zipCode.trim()) {
+     alert('모든 정보를 입력하세요.')
+     return
+   }
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    if (!emailRegex.test(email)) {
-      alert('올바른 이메일 주소를 입력해주세요.')
-      return
-    }
+   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+   if (!emailRegex.test(email)) {
+     alert('올바른 이메일 주소를 입력해주세요.')
+     return
+   }
 
-    if (cartItems.length === 0) {
-      alert('장바구니에 상품이 없습니다.')
-      return
-    }
+   if (cartItems.length === 0) {
+     alert('장바구니에 상품이 없습니다.')
+     return
+   }
 
-    const payload: OrderRequest = {
-        customerEmail: email,
-      shippingAddress: address,
-      shippingZipCode: zipCode,
-      items: cartItems.map(i => ({
-        productId: i.id,
-        quantity: i.quantity,
-      })),
-    }
+   // 먼저 주문 여부 확인 (주문 안 하면 API 호출 안 함)
+   const orderConfirmed = window.confirm('주문하시겠습니까?')
+   if (!orderConfirmed) {
+     return
+   }
 
-    try {
-      setLoading(true)
+   // 취소하면 데이터 안들어지는 게 더 나은거 같다고 생각 -> 뒤에 넣기
+   const payload: OrderRequest = {
+     customerEmail: email,
+     shippingAddress: address,
+     shippingZipCode: zipCode,
+     items: cartItems.map(i => ({
+       productId: i.id,
+       quantity: i.quantity,
+     })),
+   }
 
-      const res = await apiFetch<ApiResponse<Order>>(
-        'http://localhost:8080/api/v1/orders',
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload),
-        }
-      )
+   try {
+     setLoading(true)
 
-      const orderId = res.data.orderId
+     // 주문 생성 API 호출
+     const res = await apiFetch<ApiResponse<Order>>(
+       'http://localhost:8080/api/v1/orders',
+       {
+         method: 'POST',
+         headers: { 'Content-Type': 'application/json' },
+         body: JSON.stringify(payload),
+       }
+     )
 
-      const confirmed = window.confirm('결제를 진행하시겠습니까?')
+     const orderId = res.data.orderId
 
-      const paymentEndpoint = confirmed
-        ? `/api/v1/orders/${orderId}/payment/complete`
-        : `/api/v1/orders/${orderId}/payment/cancel`
+     // 결제 여부 확인
+     const confirmed = window.confirm('결제하시겠습니까?')
 
-      await apiFetch(`http://localhost:8080${paymentEndpoint}`, {
-        method: 'PUT',
-      })
+     const paymentEndpoint = confirmed
+       ? `/api/v1/orders/${orderId}/payment/complete`
+       : `/api/v1/orders/${orderId}/payment/cancel`
 
-      clearCart()
-      setEmail('')
-      setAddress('')
-      setZipCode('')
+     await apiFetch(`http://localhost:8080${paymentEndpoint}`, {
+       method: 'POST',
+     })
 
-      if (confirmed) {
-        router.push(`/order/complete?orderId=${orderId}`)
-      } else {
-        alert('결제가 취소되었습니다.')
-        router.push('/')
-      }
-    } catch (e: any) {
-      alert(e?.message || '주문 처리 중 오류가 발생했습니다.')
-    } finally {
-      setLoading(false)
-    }
-  }
+     clearCart()
+     setEmail('')
+     setAddress('')
+     setZipCode('')
+
+     if (confirmed) {
+       router.push(`/order/complete?orderId=${orderId}`)
+     } else {
+       alert('결제가 취소되었습니다.')
+       router.push('/')
+     }
+   } catch (e: any) {
+     alert(e?.message || '주문 처리 중 오류가 발생했습니다.')
+   } finally {
+     setLoading(false)
+   }
+ }
+
 
   if (loading) return <p>로딩 중...</p>
   if (error) return <p className="text-red-600">에러: {error}</p>

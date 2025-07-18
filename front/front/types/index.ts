@@ -31,21 +31,26 @@ export interface Product {
   imageUrl?: string  // url 이미지 선택적 속성으로 받기
 }
 
-export interface CartItem {
-  id: number
-  quantity: number
-}
-
-export interface OrderResponse {
-  resultCode: string
-  msg: string
-  data: Order
-}
 
 export interface OrderRequest {
   customerEmail: string
   shippingAddress: string
   shippingZipCode: string
+  items: {
+    productId: number
+    quantity: number
+  }[]
+}
+
+export interface OrderResponse {
+  orderId: number
+  totalPrice: number
+  createDate: string
+  modifyDate: string
+  shippingZipCode: string
+  customerEmail: string
+  shippingAddress: string
+  status: 'PENDING' | 'PAID' | 'CANCELED'
   items: {
     productId: number
     quantity: number

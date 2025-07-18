@@ -38,15 +38,36 @@ export default function HomePage() {
 
   if (errorMessage)
     return (
-      <div className="text-center mt-10">
-        <p className="text-red-600 font-semibold mb-4">{errorMessage}</p>
-        <button
-          onClick={() => window.location.reload()}
-          className="bg-amber-600 hover:bg-amber-700 text-white font-semibold py-2 px-4 rounded"
-        >
-          새로고침
-        </button>
-      </div>
+        <main className="grid place-items-center relative">
+              <Link
+                href="/admin/login"
+                className="absolute right-4 top-4 hover:text-amber-700"
+              >
+                👤
+              </Link>
+
+              <HeaderTitle />
+              <p className="text-gray-600 mb-3">상품을 소개합니다.</p>
+
+              <div className="w-full max-w-2xl">
+                <h4 className="text-2xl font-bold mb-4 text-amber-900 bg-amber-200 p-4 rounded-xl text-center">
+                  상품 목록
+                </h4>
+              </div>
+
+              <div className="text-center mt-10">
+                      <p className="text-red-600 font-semibold mb-4">{errorMessage}</p>
+                      <button
+                        onClick={() => window.location.reload()}
+                        className="bg-amber-600 hover:bg-amber-700 text-white font-semibold py-2 px-4 rounded"
+                      >
+                        새로고침
+                      </button>
+                    </div>
+
+
+            </main>
+
     )
 
   return (
