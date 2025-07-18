@@ -255,7 +255,6 @@ void t2_1() throws Exception
         resultActions
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.msg").value("상품을 찾을 수 없습니다."));
-
     }
 
     @Test
