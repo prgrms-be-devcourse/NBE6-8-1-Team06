@@ -56,4 +56,8 @@ public final ProductRepository productRepository;
 
     }
 
+    public void deleteAll() {
+        productRepository.deleteAll();
+    }
+
 }
