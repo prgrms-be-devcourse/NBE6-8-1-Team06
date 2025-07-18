@@ -254,7 +254,7 @@ void t2_1() throws Exception
 
         resultActions
                 .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.msg").value("상품을 찾을수 없습니다."));
+                .andExpect(jsonPath("$.msg").value("상품을 찾을 수 없습니다."));
 
     }
 
@@ -291,7 +291,7 @@ void t2_1() throws Exception
 
         resultActions
                 .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.msg").value("상품을 찾을수 없습니다."));
+                .andExpect(jsonPath("$.msg").value("상품을 찾을 수 없습니다."));
 
     }
 
@@ -324,6 +324,32 @@ void t2_1() throws Exception
                 .andExpect(jsonPath("$.data.description").value("수정된 맛있는 커피입니다."))
                 .andExpect(jsonPath("$.data.price").value(6000))
                 .andExpect(jsonPath("$.data.imgUrl").value(product.getImgUrl()));
+    }
+    @Test
+    @DisplayName("상품 수정 - 상품이 없는 경우")
+    void t5_1() throws Exception {
+        // 존재하지 않는 상품 ID로 수정 요청
+        int nonExistentProductId = 9999;
+
+        ResultActions resultActions = mockMvc.perform(
+                MockMvcRequestBuilders.put("/api/v1/products/" + nonExistentProductId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                  "name": "수정된 커피",
+                                  "description": "수정된 맛있는 커피입니다.",
+                                  "imgUrl": "imaegeUrl",
+                                  "price": 6000
+                                }
+                                """)
+        ).andDo(print());
+
+        String responseBody = resultActions.andReturn().getResponse().getContentAsString();
+        System.out.println(responseBody);
+
+        resultActions
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.msg").value("상품을 찾을 수 없습니다."));
     }
 
 }
