@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import {useRouter} from "next/navigation";
+
 type OrderItem = {
   productId: number
   productName: string
@@ -22,7 +23,11 @@ export default function AdminOrderPage() {
   const [orders, setOrders] = useState<Order[]>([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [emailFilter, setEmailFilter] = useState('')
+  const [productFilter, setProductFilter] = useState('')
+
   const router = useRouter()
+
   useEffect(() => {
     fetchOrders()
   }, [])
@@ -44,14 +49,12 @@ export default function AdminOrderPage() {
 
   async function updateOrderStatus(orderId: number, newStatus: string) {
     try {
-      // 현재 orders 상태에서 바꿀 주문 찾기
       const orderToUpdate = orders.find(o => o.orderId === orderId);
       if (!orderToUpdate) {
         alert('해당 주문을 찾을 수 없습니다.');
         return;
       }
 
-      // 서버가 요구하는 전체 데이터 형식 맞춰서 body 생성
       const body = {
         shippingAddress: orderToUpdate.shippingAddress,
         shippingZipCode: orderToUpdate.shippingZipCode,
@@ -69,16 +72,41 @@ export default function AdminOrderPage() {
       });
       if (!res.ok) throw new Error('주문 상태 변경 실패');
 
-      await fetchOrders(); // 변경 후 최신 주문 목록 다시 가져오기
+      await fetchOrders();
     } catch (e: any) {
       alert(e.message);
     }
   }
 
+  // 필터링된 주문 목록 계산
+  const filteredOrders = orders.filter(order => {
+    const emailMatch = order.customerEmail.toLowerCase().includes(emailFilter.toLowerCase())
+    const productMatch = productFilter.trim() === '' ||
+      order.items.some(item => item.productName.toLowerCase().includes(productFilter.toLowerCase()))
+    return emailMatch && productMatch
+  })
 
   return (
     <main className="p-6 max-w-6xl mx-auto">
       <h1 className="text-3xl font-bold mb-6">주문 관리</h1>
+
+      {/* 필터 입력란 */}
+      <div className="mb-4 flex gap-4">
+        <input
+          type="text"
+          placeholder="주문자 이메일로 필터"
+          value={emailFilter}
+          onChange={(e) => setEmailFilter(e.target.value)}
+          className="border border-gray-400 rounded px-3 py-2 flex-1"
+        />
+        <input
+          type="text"
+          placeholder="상품명으로 필터"
+          value={productFilter}
+          onChange={(e) => setProductFilter(e.target.value)}
+          className="border border-gray-400 rounded px-3 py-2 flex-1"
+        />
+      </div>
 
       {loading && <p>로딩 중...</p>}
       {error && <p className="text-red-600">{error}</p>}
@@ -97,7 +125,7 @@ export default function AdminOrderPage() {
           </tr>
         </thead>
         <tbody>
-          {orders.map((order) => (
+          {filteredOrders.map((order) => (
             <tr key={order.orderId} className="text-center border border-gray-300">
               <td className="border border-gray-300 p-2">{order.orderId}</td>
               <td className="border border-gray-300 p-2">{order.customerEmail}</td>
@@ -123,28 +151,35 @@ export default function AdminOrderPage() {
                   <option value="PENDING">PENDING</option>
                   <option value="PAID">PAID</option>
                   <option value="CANCELED">CANCELED</option>
-                  {/* 상태변하게 해둠  */}
                 </select>
               </td>
             </tr>
           ))}
+
+          {filteredOrders.length === 0 && (
+            <tr>
+              <td colSpan={8} className="p-4 text-center text-gray-500">
+                조건에 맞는 주문이 없습니다.
+              </td>
+            </tr>
+          )}
         </tbody>
       </table>
 
       <div className="mt-3">
-            <button
-                onClick={() => router.back()}
-                className="mr-3 bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded"
-              >
-                🔙 뒤로가기
-              </button>
-              <button
-                onClick={() => router.push('/')}
-                className="bg-amber-600 hover:bg-amber-700 text-white font-semibold py-2 px-4 rounded"
-              >
-                🏠 홈으로 이동
-              </button>
-            </div>
+        <button
+          onClick={() => router.back()}
+          className="mr-3 bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded"
+        >
+          🔙 뒤로가기
+        </button>
+        <button
+          onClick={() => router.push('/')}
+          className="bg-amber-600 hover:bg-amber-700 text-white font-semibold py-2 px-4 rounded"
+        >
+          🏠 홈으로 이동
+        </button>
+      </div>
     </main>
   )
 }
