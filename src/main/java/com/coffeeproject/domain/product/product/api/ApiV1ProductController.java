@@ -71,7 +71,7 @@ public class ApiV1ProductController {
     public RsData<Product> deleteProductById(@PathVariable(value = "id") int id)
     {
         Product product = productService.findById(id).orElse(null);
-        if (product == null) {return new RsData<>("404", "상품이 존재화지  않습니다.", null);}
+        if (product == null) {return new RsData<>("404", "상품을 찾을 수 없습니다.", null);}
         else {
             productService.deleteById(id);
             return new RsData<>("204", "상품이 삭제되었습니다.", null);
