@@ -73,6 +73,78 @@ public class ApiV1ProductControllerTest {
 
     }
 
+    @Test
+    @DisplayName("상품 등록- 상품 설명 필수")
+    void t1_1() throws Exception {
+
+        ResultActions resultActions = mockMvc.perform(
+                MockMvcRequestBuilders.post("/api/v1/products")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                  "name": "커피",
+                                  "imgUrl": "TestImgUrl",
+                                  "price": 5000
+                                }
+                                """)
+        ).andDo(print());
+
+        String responseBody = resultActions.andReturn().getResponse().getContentAsString();
+        System.out.println(responseBody);
+
+        resultActions
+                .andExpect(jsonPath("$.resultCode").value("400-1"))
+                .andExpect(jsonPath("$.msg").value("description-NotBlank-must not be blank"));
+
+    }
+    @Test
+    @DisplayName("상품 등록- 상품 이미지 주소 필수")
+    void t1_2() throws Exception {
+
+        ResultActions resultActions = mockMvc.perform(
+                MockMvcRequestBuilders.post("/api/v1/products")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                  "name": "커피",
+                                  "description": "맛있는 커피입니다.",
+                                  "price": 5000
+                                }
+                                """)
+        ).andDo(print());
+
+        String responseBody = resultActions.andReturn().getResponse().getContentAsString();
+        System.out.println(responseBody);
+
+        resultActions
+                .andExpect(jsonPath("$.resultCode").value("400-1"))
+                .andExpect(jsonPath("$.msg").value("imgUrl-NotBlank-must not be blank"));
+
+    }
+    @Test
+    @DisplayName("상품 등록- 상품 이름 필수")
+    void t1_3() throws Exception {
+
+        ResultActions resultActions = mockMvc.perform(
+                MockMvcRequestBuilders.post("/api/v1/products")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                  "description": "맛있는 커피입니다.",
+                                  "imgUrl": "TestImgUrl",
+                                  "price": 5000
+                                }
+                                """)
+        ).andDo(print());
+
+        String responseBody = resultActions.andReturn().getResponse().getContentAsString();
+        System.out.println(responseBody);
+
+        resultActions
+                .andExpect(jsonPath("$.resultCode").value("400-1"))
+                .andExpect(jsonPath("$.msg").value("name-NotBlank-must not be blank"));
+
+    }
 
     @Test
     @DisplayName("상품 다건 조회")
@@ -122,6 +194,28 @@ public class ApiV1ProductControllerTest {
     }
 
     @Test
+    @DisplayName("상품 다건 조회 - 상품이 없는 경우")
+void t2_1() throws Exception
+    {
+        // 모든 상품을 삭제하여 빈 리스트를 만듭니다.
+        productService.deleteAll();
+
+        ResultActions resultActions = mockMvc
+                .perform(
+                        get("/api/v1/products")
+                )
+                .andDo(print());
+
+        String responseBody = resultActions.andReturn().getResponse().getContentAsString();
+        System.out.println(responseBody);
+
+        resultActions
+                .andExpect(handler().handlerType(ApiV1ProductController.class))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.msg").value("상품이 없습니다."));
+    }
+
+    @Test
     @DisplayName("상품 단건 조회")
     void t3() throws Exception {
 
@@ -142,7 +236,27 @@ public class ApiV1ProductControllerTest {
                 .andExpect(jsonPath("$.data.imgUrl").value(product.getImgUrl()));
 
     }
+    @Test
+    @DisplayName("상품 단건 조회- 상품이 없는 경우")
+    void t3_1() throws Exception {
 
+        // 존재하지 않는 상품 ID로 조회
+        int nonExistentProductId = 9999;
+
+        ResultActions resultActions = mockMvc
+                .perform(
+                        get("/api/v1/products/" + nonExistentProductId)
+                )
+                .andDo(print());
+
+        String responseBody = resultActions.andReturn().getResponse().getContentAsString();
+        System.out.println(responseBody);
+
+        resultActions
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.msg").value("상품을 찾을수 없습니다."));
+
+    }
 
     @Test
     @DisplayName("상품 삭제")
@@ -158,6 +272,26 @@ public class ApiV1ProductControllerTest {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+    }
+
+    @Test
+    @DisplayName("상품삭제 - 상품이 없는 경우")
+    void t4_1() throws Exception {
+
+        // 존재하지 않는 상품 ID로 삭제 요청
+        int nonExistentProductId = 9999;
+
+        ResultActions resultActions = mockMvc.perform(
+                MockMvcRequestBuilders.delete("/api/v1/products/" + nonExistentProductId)
+        ).andDo(print());
+
+        String responseBody = resultActions.andReturn().getResponse().getContentAsString();
+        System.out.println(responseBody);
+
+        resultActions
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.msg").value("상품을 찾을수 없습니다."));
 
     }
 
@@ -178,6 +312,7 @@ public class ApiV1ProductControllerTest {
                                 }
                                 """)
         ).andDo(print());
+
 
         String responseBody = resultActions.andReturn().getResponse().getContentAsString();
         System.out.println(responseBody);
