@@ -56,3 +56,10 @@ export interface OrderResponse {
     quantity: number
   }[]
 }
+export interface ProductForm {
+  id?: number;
+  name: string;
+  description: string;
+  price: number;
+  imageUrl?: string;
+}
